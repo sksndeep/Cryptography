@@ -164,7 +164,7 @@
 <!-- LOGIN GATE PANEL -->
 <div id="login-gate" class="info" style="margin: 20px 0; background: #fff; border: 2px solid #2563eb;">
   <h3>Student Authentication</h3>
-  <p>Please enter your official details to unlock your personalized set of 12 questions. Tab-switching is monitored once unlocked.</p>
+  <p>Please enter your official details and secret PIN. Your credentials will be verified against the secure server database before unlocking the quiz.</p>
   <div class="user-info-row" style="margin: 10px 0;">
     <div class="user-info-field">
       <label for="student-name"><strong>Name:</strong></label>
@@ -183,7 +183,8 @@
       <input id="student-date" placeholder="Enter date" type="text"/>
     </div>
   </div>
-  <button type="button" onclick="unlockQuiz()">Start Quiz</button>
+  <button id="start-quiz-button" type="button" onclick="unlockQuiz()">Start Quiz</button>
+  <div id="login-status" role="status" aria-live="polite" style="margin-top:10px; font-weight:bold; display:none;"></div>
 </div>
 
 <!-- QUIZ CONTENT AREA -->
@@ -301,6 +302,8 @@ function unlockQuiz() {
     const name = document.getElementById("student-name").value.trim();
     const email = document.getElementById("student-email").value.trim();
     const pin = document.getElementById("student-pin").value.trim();
+    const loginStatus = document.getElementById("login-status");
+    const startBtn = document.getElementById("start-quiz-button");
 
     if (!name || !email || !pin) {
         alert("Please enter your name, email, and secret access PIN to unlock the quiz.");
@@ -311,30 +314,81 @@ function unlockQuiz() {
         return;
     }
 
-    const categories = ["shift", "rsa-calc", "rsa-sig", "vigenere", "rsa-blocks", "affine"];
-    document.querySelectorAll(".question").forEach(q => q.style.display = "none");
+    loginStatus.style.display = "block";
+    loginStatus.style.color = "#1d4ed8";
+    loginStatus.textContent = "Verifying PIN with server...";
+    startBtn.disabled = true;
 
-    categories.forEach(cat => {
-        const matchingQuestions = Array.from(document.querySelectorAll(`.question[data-category="${cat}"]`));
-        for (let i = matchingQuestions.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [matchingQuestions[i], matchingQuestions[j]] = [matchingQuestions[j], matchingQuestions[i]];
+    const payload = JSON.stringify({ action: "verifyPin", name: name, email: email, pin: pin });
+    const callbackName = "verifyCallback_" + Date.now();
+    let finished = false;
+    let scriptEl = null;
+    let timer = null;
+
+    function cleanup() {
+        finished = true;
+        clearTimeout(timer);
+        try { delete window[callbackName]; } catch (e) { window[callbackName] = undefined; }
+        if (scriptEl && scriptEl.parentNode) scriptEl.parentNode.removeChild(scriptEl);
+    }
+
+    window[callbackName] = function (result) {
+        if (finished) return;
+        cleanup();
+        if (result && result.success) {
+            loginStatus.style.display = "none";
+            startBtn.disabled = false;
+
+            const categories = ["shift", "rsa-calc", "rsa-sig", "vigenere", "rsa-blocks", "affine"];
+            document.querySelectorAll(".question").forEach(q => q.style.display = "none");
+
+            categories.forEach(cat => {
+                const matchingQuestions = Array.from(document.querySelectorAll(`.question[data-category="${cat}"]`));
+                for (let i = matchingQuestions.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [matchingQuestions[i], matchingQuestions[j]] = [matchingQuestions[j], matchingQuestions[i]];
+                }
+                matchingQuestions.slice(0, 2).forEach(q => {
+                    q.style.display = "block";
+                    q.classList.add("active-subset");
+                });
+            });
+
+            document.querySelectorAll(".question.active-subset").forEach((q, idx) => {
+                const label = q.querySelector("p > strong");
+                if (label) label.textContent = (idx + 1) + ".";
+            });
+
+            quizUnlocked = true;
+            document.getElementById("login-gate").style.display = "none";
+            document.getElementById("quiz-content-area").style.display = "block";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+            loginStatus.style.color = "#b91c1c";
+            loginStatus.textContent = (result && result.message) || "Invalid credentials or incorrect PIN. Please check your details.";
+            startBtn.disabled = false;
         }
-        matchingQuestions.slice(0, 2).forEach(q => {
-            q.style.display = "block";
-            q.classList.add("active-subset");
-        });
-    });
+    };
 
-    document.querySelectorAll(".question.active-subset").forEach((q, idx) => {
-        const label = q.querySelector("p > strong");
-        if (label) label.textContent = (idx + 1) + ".";
-    });
-
-    quizUnlocked = true;
-    document.getElementById("login-gate").style.display = "none";
-    document.getElementById("quiz-content-area").style.display = "block";
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    scriptEl = document.createElement("script");
+    scriptEl.onerror = function () {
+        cleanup();
+        loginStatus.style.color = "#b91c1c";
+        loginStatus.textContent = "Could not reach the authentication server. Please try again.";
+        startBtn.disabled = false;
+    };
+    scriptEl.src = GOOGLE_APPS_SCRIPT_URL +
+        "?callback=" + encodeURIComponent(callbackName) +
+        "&payload=" + encodeURIComponent(payload);
+    timer = setTimeout(function () {
+        if (!finished) {
+            cleanup();
+            loginStatus.style.color = "#b91c1c";
+            loginStatus.textContent = "Authentication request timed out.";
+            startBtn.disabled = false;
+        }
+    }, 20000);
+    document.body.appendChild(scriptEl);
 }
 
 function saveResult(email, token) {
