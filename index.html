@@ -68,6 +68,7 @@
         border-left: 4px solid #2563eb;
         border-radius: 5px;
         margin: 15px 0;
+        font-family: system-ui, sans-serif;
     }
     .question {
         border: 1px solid #e2e8f0;
@@ -209,8 +210,7 @@
 <p>Assume \(A = 0, B = 1, \dots, Z = 25\). Wrap around after \(Z\). Preserve spaces between words where applicable.</p>
 </div>
 
-<!-- QUESTIONS WITH DESCRIPTIONS -->
-
+<!-- CATEGORY 1: SHIFT CIPHERS -->
 <h2>Part A: Shift Ciphers</h2>
 <div class="info">
   <p><strong>Description:</strong> Each letter is shifted by a fixed key \(k\). Encryption formula: \(E(x) = (x + k) \pmod{26}\).</p>
@@ -236,6 +236,7 @@
 <div class="result"></div>
 </div>
 
+<!-- CATEGORY 2: RSA CALCULATIONS -->
 <h2>Part B: RSA Calculations &amp; Key Generation</h2>
 <div class="info">
   <p><strong>Description:</strong> Practice computing modulus \(n = p \times q\), Euler's totient \(\varphi(n) = (p-1)(q-1)\), private exponents \(d\), and basic encryption/decryption.</p>
@@ -261,6 +262,7 @@
 <div class="result"></div>
 </div>
 
+<!-- CATEGORY 3: RSA DIGITAL SIGNATURES -->
 <h2>Part C: RSA Digital Signatures</h2>
 <div class="info">
   <p><strong>Description:</strong> Sign messages using private keys (\(S = M^d \pmod{n}\)) and verify or send confidential encrypted blocks.</p>
@@ -286,6 +288,7 @@
 <div class="result"></div>
 </div>
 
+<!-- CATEGORY 4: VIGENÈRE CIPHERS -->
 <h2>Part D: Vigenère Ciphers</h2>
 <div class="info">
   <p><strong>Description:</strong> Polyalphabetic substitution using a repeating keyword to supply shifting values.</p>
@@ -311,6 +314,7 @@
 <div class="result"></div>
 </div>
 
+<!-- CATEGORY 5: RSA BLOCK CIPHERS -->
 <h2>Part E: RSA Block Ciphers</h2>
 <div class="info">
   <p><strong>Description:</strong> Translate text letters into integer pairs and encrypt/decrypt multi-digit blocks using RSA.</p>
@@ -336,6 +340,7 @@
 <div class="result"></div>
 </div>
 
+<!-- CATEGORY 6: AFFINE CIPHERS -->
 <h2>Part F: Affine Ciphers</h2>
 <div class="info">
   <p><strong>Description:</strong> Linear substitution transformation using \(E(x) = (ax + b) \pmod{26}\) where \(\gcd(a,26) = 1\).</p>
