@@ -111,12 +111,17 @@
         margin: 15px 0;
         font-family: system-ui, sans-serif;
     }
-    .alphabet {
-        overflow-wrap: anywhere;
-        font-family: monospace;
-        background: #f8fafc;
-        padding: 12px;
-        border-radius: 5px;
+    .sticky-alphabet {
+        position: sticky;
+        top: 0;
+        z-index: 999;
+        background: #ffffff;
+        padding: 10px 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        margin-bottom: 20px;
+        overflow-x: auto;
     }
     footer {
         text-align: center;
@@ -133,7 +138,7 @@
     @media print {
         body { background: white; padding: 0; }
         .container { box-shadow: none; }
-        button, .result, .solution, #returning, #deadline-notice { display: none !important; }
+        button, .result, .solution, #returning, #deadline-notice, .sticky-alphabet { display: none !important; }
         input[type="text"] { border: 1px solid #777; background: transparent; }
         .user-info-field input { border-bottom: 1px solid #777; background: transparent; }
     }
@@ -182,6 +187,21 @@
 
 <!-- QUIZ CONTENT AREA (Hidden initially) -->
 <div id="quiz-content-area">
+
+<!-- STICKY ALPHABET REFERENCE BAR -->
+<div class="sticky-alphabet">
+  <table style="font-family: monospace; border-collapse: collapse; text-align: center; width: 100%; white-space: nowrap;">
+    <tr>
+      <td style="text-align: left; font-weight: bold; padding-right: 15px;">Plain:</td>
+      <td>A</td><td>B</td><td>C</td><td>D</td><td>E</td><td>F</td><td>G</td><td>H</td><td>I</td><td>J</td><td>K</td><td>L</td><td>M</td><td>N</td><td>O</td><td>P</td><td>Q</td><td>R</td><td>S</td><td>T</td><td>U</td><td>V</td><td>W</td><td>X</td><td>Y</td><td>Z</td>
+    </tr>
+    <tr>
+      <td style="text-align: left; font-weight: bold; padding-right: 15px;">Index:</td>
+      <td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td><td>23</td><td>24</td><td>25</td>
+    </tr>
+  </table>
+</div>
+
 <div class="info">
 <strong>Instructions</strong>
 <p>
@@ -745,18 +765,9 @@ For decryption use \(D(y)=a^{-1}(y-b)\bmod 26\). Spaces are preserved.</p>
 <button class="secondary" onclick="resetWorksheet()">Reset</button>
 <button class="secondary" onclick="printWorksheet()">Print Worksheet</button>
 
-<div class="alphabet" style="position: sticky; top: 10px; z-index: 1000; background: #ffffff; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); overflow-x: auto; margin-bottom: 20px;">
-  <table style="font-family: monospace; border-collapse: collapse; text-align: center; width: 100%;">
-    <tr>
-      <td style="text-align: left; font-weight: bold; padding-right: 10px; white-space: nowrap;">Plain:</td>
-      <td>A</td><td>B</td><td>C</td><td>D</td><td>E</td><td>F</td><td>G</td><td>H</td><td>I</td><td>J</td><td>K</td><td>L</td><td>M</td><td>N</td><td>O</td><td>P</td><td>Q</td><td>R</td><td>S</td><td>T</td><td>U</td><td>V</td><td>W</td><td>X</td><td>Y</td><td>Z</td>
-    </tr>
-    <tr>
-      <td style="text-align: left; font-weight: bold; padding-right: 10px; white-space: nowrap;">Index:</td>
-      <td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td><td>23</td><td>24</td><td>25</td>
-    </tr>
-  </table>
-</div>
+</div> <!-- End of #quiz-content-area -->
+
+</div> <!-- End of .container -->
 
 <footer>
         Cryptography Practice Worksheet: Shift, Affine, RSA, Digital Signatures, and Vigenère Ciphers | Computer Science
@@ -765,7 +776,7 @@ For decryption use \(D(y)=a^{-1}(y-b)\bmod 26\). Spaces are preserved.</p>
 <script>
 const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxRaDDt9Rc5eylP_GP0Xm5nVdPqv4mpsh1BmMqZwoXLpXB-w-9sGOtBkSQ3jIl6YrRSOg/exec";
 let quizSubmitted = false;
-let quizUnlocked = false; // Tracks if student has unlocked the quiz
+let quizUnlocked = false;
 let reviewToken = "";
 let reviewEmail = "";
 const TOTAL_QUESTIONS = 77;
@@ -803,7 +814,6 @@ function unlockQuiz() {
         return;
     }
 
-    // Basic client-side check passed, reveal quiz questions
     quizUnlocked = true;
     document.getElementById("login-gate").style.display = "none";
     document.getElementById("quiz-content-area").style.display = "block";
@@ -1043,28 +1053,17 @@ function submitQuiz() {
             const finalScore = Number(result.score);
             const finalTotal = Number(result.total);
             const finalPercentage = Number(result.percentage);
-            
-            // Build a clean summary of what the student submitted
-            let summaryHTML = "<h3>Submission Summary</h3><p>Here are the answers you submitted:</p><ul style='text-align: left; max-height: 250px; overflow-y: auto; padding-left: 20px;'>";
-            responses.forEach((r) => {
-                summaryHTML += `<li><strong>Q${r.question}:</strong> ${r.answer ? r.answer : '<em>No answer</em>'}</li>`;
-            });
-            summaryHTML += "</ul>";
-
-            status.innerHTML = "Submission received! Your score is <strong>" + finalScore + " / " + finalTotal + 
-                " (" + finalPercentage + "%)</strong>.<br><br>" + summaryHTML;
-                
+            status.textContent = "Submission received. Your score is " + finalScore + " / " + finalTotal +
+                " (" + finalPercentage + "%).";
             document.getElementById("score").textContent =
                 "Final Score: " + finalScore + " / " + finalTotal + " (" + finalPercentage + "%)";
-                
             document.querySelectorAll(".question input, #student-name, #student-email, #student-pin, #student-date").forEach(el => el.disabled = true);
             submitButton.textContent = "Quiz Submitted";
             reviewToken = String(result.token || "");
             reviewEmail = email;
-            
             if (reviewToken) {
                 saveResult(email, reviewToken);
-                status.innerHTML += "<p style='margin-top:15px;'>Solutions will become available after the deadline (" + DEADLINE_TEXT + ").</p>";
+                status.textContent += " Solutions will be available after the deadline (" + DEADLINE_TEXT + ").";
                 document.getElementById("show-solutions-button").style.display = "inline-block";
             }
             document.getElementById("score").scrollIntoView({behavior: "smooth", block: "center"});
