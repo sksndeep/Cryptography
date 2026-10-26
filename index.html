@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -45,7 +44,9 @@
         flex: 1;
         min-width: 250px;
     }
-    .user-info-field input[type="text"] {
+    .user-info-field input[type="text"],
+    .user-info-field input[type="password"],
+    .user-info-field input[type="email"] {
         flex: 1;
         padding: 6px 10px;
         border: none;
@@ -58,7 +59,7 @@
         border-radius: 0;
         width: auto;
     }
-    .user-info-field input[type="text"]:focus {
+    .user-info-field input:focus {
         border-bottom-color: #2563eb;
     }
     .info {
@@ -131,7 +132,7 @@
         .container { box-shadow: none; }
         button, .result, .solution, #returning, #deadline-notice { display: none !important; }
         input[type="text"] { border: 1px solid #777; background: transparent; }
-        .user-info-field input[type="text"] { border-bottom: 1px solid #777; background: transparent; }
+        .user-info-field input { border-bottom: 1px solid #777; background: transparent; }
     }
 </style>
 </head>
@@ -149,6 +150,7 @@
 </div>
 <div class="info" id="returning-status" role="status" aria-live="polite" style="display:none; margin-top:10px;"></div>
 </details>
+
 <div class="user-info-row">
 <div class="user-info-field">
 <label for="student-name"><strong>Name:</strong></label>
@@ -156,13 +158,18 @@
 </div>
 <div class="user-info-field">
 <label for="student-email"><strong>Email:</strong></label>
-<input id="student-email" placeholder="Enter your email (@dau.ac.in)" type="email" autocomplete="email" required/>
+<input id="student-email" placeholder="Enter your @dau.ac.in email" type="email" autocomplete="email" required/>
+</div>
+<div class="user-info-field">
+<label for="student-pin"><strong>Access PIN:</strong></label>
+<input id="student-pin" placeholder="Enter your secret PIN" type="password" required/>
 </div>
 <div class="user-info-field">
 <label for="student-date"><strong>Date:</strong></label>
 <input id="student-date" placeholder="Enter date" type="text"/>
 </div>
 </div>
+
 <div class="info">
 <strong>Instructions</strong>
 <p>
@@ -201,95 +208,83 @@
 <p><strong>1.</strong> Plaintext: \(\text{ABC}\) | Key: \(23\)</p>
 <input placeholder="Enter ciphertext" type="text"/>
 <div class="result"></div>
-
 </div>
 <div class="question" data-qid="2" data-type="text">
 <p><strong>2.</strong> Plaintext: \(\text{CAT}\) | Key: \(3\)</p>
 <input placeholder="Enter ciphertext" type="text"/>
 <div class="result"></div>
-
 </div>
 <div class="question" data-qid="3" data-type="text">
 <p><strong>3.</strong> Plaintext: \(\text{HELLO}\) | Key: \(3\)</p>
 <input placeholder="Enter ciphertext" type="text"/>
 <div class="result"></div>
-
 </div>
 <div class="question" data-qid="4" data-type="text">
 <p><strong>4.</strong> Plaintext: \(\text{HELLO WORLD}\) | Key: \(5\)</p>
 <input placeholder="Enter ciphertext" type="text"/>
 <div class="result"></div>
-
 </div>
 <div class="question" data-qid="5" data-type="text">
 <p><strong>5.</strong> Plaintext: \(\text{THE QUICK BROWN FOX}\) | Key: \(3\)</p>
 <input placeholder="Enter ciphertext" type="text"/>
 <div class="result"></div>
-
 </div>
+
 <h2>Part B: Decryption</h2>
 <p>Recover the original plaintext using the given key.</p>
 <div class="question" data-qid="6" data-type="text">
 <p><strong>6.</strong> Ciphertext: \(\text{XYZ}\) | Key: \(23\)</p>
 <input placeholder="Enter plaintext" type="text"/>
 <div class="result"></div>
-
 </div>
 <div class="question" data-qid="7" data-type="text">
 <p><strong>7.</strong> Ciphertext: \(\text{FRPSXWHU}\) | Key: \(3\)</p>
 <input placeholder="Enter plaintext" type="text"/>
 <div class="result"></div>
-
 </div>
 <div class="question" data-qid="8" data-type="text">
 <p><strong>8.</strong> Ciphertext: \(\text{DWWDFN}\) | Key: \(3\)</p>
 <input placeholder="Enter plaintext" type="text"/>
 <div class="result"></div>
-
 </div>
 <div class="question" data-qid="9" data-type="text">
 <p><strong>9.</strong> Ciphertext: \(\text{PHHW PH}\) | Key: \(3\)</p>
 <input placeholder="Enter plaintext" type="text"/>
 <div class="result"></div>
-
 </div>
 <div class="question" data-qid="10" data-type="text">
 <p><strong>10.</strong> Ciphertext: \(\text{BTWQI}\) | Key: \(5\)</p>
 <input placeholder="Enter plaintext" type="text"/>
 <div class="result"></div>
-
 </div>
+
 <h2>Part C: Challenge Questions</h2>
 <div class="question" data-qid="11" data-type="number">
 <p><strong>11.</strong> The plaintext \(A\) becomes \(D\) after encryption. What is the shift key?</p>
 <input placeholder="Enter the key" type="text"/>
 <div class="result"></div>
-
 </div>
 <div class="question" data-qid="12" data-type="text">
 <p><strong>12.</strong> Decrypt \(\text{VHFUHW FRGH}\) using key \(3\).</p>
 <input placeholder="Enter plaintext" type="text"/>
 <div class="result"></div>
-
 </div>
 <div class="question" data-qid="13" data-type="text">
 <p><strong>13.</strong> Encrypt \(\text{HELLO}\) with key \(10\), then decrypt your result using the same key. What is the ciphertext?</p>
 <input placeholder="Enter ciphertext" type="text"/>
 <div class="result"></div>
-
 </div>
 <div class="question" data-qid="14" data-type="number">
 <p><strong>14.</strong> The letter \(A\) is encrypted as \(X\). What is the shift key, from \(0\) to \(25\)?</p>
 <input placeholder="Enter the key" type="text"/>
 <div class="result"></div>
-
 </div>
 <div class="question" data-qid="15" data-type="text">
 <p><strong>15.</strong> Encrypt \(\text{ZEBRA}\) using key \(1\).</p>
 <input placeholder="Enter ciphertext" type="text"/>
 <div class="result"></div>
-
 </div>
+
 <h2>Part D: RSA Cryptosystem</h2>
 <div class="info">
 <strong>RSA formulas</strong>
@@ -310,38 +305,33 @@
 <p><strong>16. Key Generation:</strong> If \(p = 5\) and \(q = 11\), calculate \(n\).</p>
 <input placeholder="Enter your answer" type="text"/>
 <div class="result"></div>
-
 </div>
 <div class="question" data-qid="17" data-type="number">
 <p><strong>17. Euler's Totient:</strong> If \(p = 5\) and \(q = 11\), calculate \(\varphi(n)\).</p>
 <input placeholder="Enter your answer" type="text"/>
 <div class="result"></div>
-
 </div>
 <div class="question" data-qid="18" data-type="number">
 <p><strong>18. Private Exponent:</strong> Given \(e = 3\) and \(\varphi(n) = 40\), find \(d\) such that \(3d \equiv 1 \pmod{40}\).</p>
 <input placeholder="Enter d" type="text"/>
 <div class="result"></div>
-
 </div>
 <div class="question" data-qid="19" data-type="number">
 <p><strong>19. RSA Encryption:</strong> Given \(n = 33\), \(e = 3\), and plaintext \(M = 2\), calculate \(C = M^e \pmod{n}\).</p>
 <input placeholder="Enter ciphertext C" type="text"/>
 <div class="result"></div>
-
 </div>
 <div class="question" data-qid="20" data-type="number">
 <p><strong>20. RSA Decryption:</strong> Given \(n = 33\), \(d = 7\), and ciphertext \(C = 29\), calculate \(M = C^d \pmod{n}\).</p>
 <input placeholder="Enter plaintext M" type="text"/>
 <div class="result"></div>
-
 </div>
 <div class="question" data-qid="21" data-type="number">
 <p><strong>21. Public Exponent:</strong> If \(\varphi(n) = 40\), which of the following is a valid public exponent \(e\): \(3\), \(4\), or \(10\)?</p>
 <input placeholder="Enter e" type="text"/>
 <div class="result"></div>
-
 </div>
+
 <h2>Part E: RSA Digital Signatures</h2>
 <div class="info">
 <strong>RSA Signing &amp; Verification</strong>
@@ -354,14 +344,13 @@
 <p><strong>22. RSA Signature Calculation:</strong> Given \(n = 2537\) and private exponent \(d = 937\), compute the signed message block \(S\) for the plaintext block \(M = 0419\) (i.e., \(0419^{937} \pmod{2537}\)).</p>
 <input placeholder="Enter signature block" type="text"/>
 <div class="result"></div>
-
 </div>
 <div class="question" data-qid="23" data-type="number">
 <p><strong>23. RSA Signature Calculation:</strong> Given Alice's parameters \(n = 2537\) and private exponent \(d = 937\), compute the signed message block \(S\) for the plaintext block \(M = 1204\) (i.e., \(1204^{937} \pmod{2537}\)).</p>
 <input placeholder="Enter signature block" type="text"/>
 <div class="result"></div>
-
 </div>
+
 <h2>Part F: Vigenère Cipher</h2>
 <div class="info">
 <strong>Vigenère Cipher Principle</strong>
@@ -374,14 +363,13 @@
 <p><strong>24. Vigenère Encryption:</strong> Use the Vigenère cipher with key <strong>BLUE</strong> (numerical equivalents: \(B=1\), \(L=11\), \(U=20\), \(E=4\)) to encrypt the message <strong>SNOWFALL</strong>.</p>
 <input placeholder="Enter ciphertext" type="text"/>
 <div class="result"></div>
-
 </div>
 <div class="question" data-qid="25" data-type="text">
 <p><strong>25. Vigenère Decryption:</strong> The ciphertext <strong>OIKYWVHBX</strong> was produced by encrypting a plaintext message using the Vigenère cipher with key <strong>HOT</strong> (\(H=7\), \(O=14\), \(T=19\)). What is the plaintext message?</p>
 <input placeholder="Enter plaintext" type="text"/>
 <div class="result"></div>
-
 </div>
+
 <h2>Part G: RSA Digital Signatures &amp; Confidentiality</h2>
 <div class="info">
 <strong>Alice and Bob Key Reference</strong>
@@ -394,14 +382,13 @@
 <p><strong>26. Signed &amp; Encrypted Message for Bob:</strong> Alice wants to send the signed block \(S = 1756\) (from message block \(M = 0124\)) exclusively to Bob. She encrypts \(S\) using Bob's public key: \(C = S^{e_{\text{Bob}}} \pmod{n_{\text{Bob}}} = 1756^{21} \pmod{3127}\). Compute \(C\).</p>
 <input placeholder="Enter encrypted ciphertext block" type="text"/>
 <div class="result"></div>
-
 </div>
 <div class="question" data-qid="27" data-type="number">
 <p><strong>27. Digital Signature Message:</strong> Alice signs the first block of her message “SELL EVERYTHING”, which translates to the numerical block \(M = 1804\). Compute her signature block \(S = M^{d_{\text{Alice}}} \pmod{n_{\text{Alice}}} = 1804^{1183} \pmod{2867}\).</p>
 <input placeholder="Enter signature block" type="text"/>
 <div class="result"></div>
-
 </div>
+
 <h2>Part H: RSA Encryption &amp; Decryption Practice</h2>
 <div class="info">
 <strong>RSA Block Encoding Instruction</strong>
@@ -413,26 +400,23 @@
 <p><strong>28. RSA Block Encryption:</strong> Encrypt the message <strong>ATTACK</strong> using the RSA system with \(n = 43 \cdot 59 = 2537\) and \(e = 13\), grouping pairs of letters into integer blocks. (Enter space-separated ciphertext blocks, e.g., 2299 1317 2117)</p>
 <input placeholder="Enter ciphertext blocks" type="text"/>
 <div class="result"></div>
-
 </div>
 <div class="question" data-qid="29" data-type="text">
 <p><strong>29. RSA Block Decryption:</strong> Decrypt the ciphertext message <strong>3185 2038 2460 2550</strong> encrypted using the RSA system with \(n = 53 \cdot 61\) and \(e = 17\). (Find \(d\) as the inverse of \(17 \pmod{52 \cdot 60}\), decrypt each block, and translate back to the plaintext message)</p>
 <input placeholder="Enter plaintext message" type="text"/>
 <div class="result"></div>
-
 </div>
 <div class="question" data-qid="30" data-type="text">
 <p><strong>30. RSA Block Decryption:</strong> Decrypt the ciphertext message <strong>0667 1947 0671</strong> encrypted using the RSA system with \(n = 43 \cdot 59\) and \(e = 13\). (Find \(d\) as the inverse of \(13 \pmod{42 \cdot 58}\), decrypt each block, and translate back to the plaintext message)</p>
 <input placeholder="Enter plaintext message" type="text"/>
 <div class="result"></div>
-
 </div>
 <div class="question" data-qid="31" data-type="text">
 <p><strong>31. RSA Block Encryption:</strong> Encrypt the message <strong>UPLOAD</strong> using the RSA system with \(n = 53 \cdot 61 = 3233\) and \(e = 17\), grouping pairs of letters into integer blocks. (Enter space-separated ciphertext blocks)</p>
 <input placeholder="Enter ciphertext blocks" type="text"/>
 <div class="result"></div>
-
 </div>
+
 <h2>Part I: Additional Shift Cipher Practice</h2>
 <p>These questions provide extra practice with encryption, decryption, wrap-around, and recovering an unknown key.</p>
 <div class="question" data-qid="32" data-type="number">
@@ -485,6 +469,7 @@
 <input placeholder="Enter ciphertext" type="text"/>
 <div class="result"></div>
 </div>
+
 <h2>Part J: Additional RSA Practice</h2>
 <p>Show the intermediate steps in your working, especially when finding modular inverses or evaluating powers modulo \(n\).</p>
 <div class="question" data-qid="42" data-type="number">
@@ -557,6 +542,7 @@
 <input placeholder="Enter ciphertext C" type="text"/>
 <div class="result"></div>
 </div>
+
 <h2>Part I: Additional Vigenère Encryption and Decryption</h2>
 <div class="info">
 <strong>Reminder</strong>
@@ -592,6 +578,7 @@
 <input placeholder="Enter ciphertext" type="text"/>
 <div class="result"></div>
 </div>
+
 <h2>Part J: Factual Questions on Cryptography</h2>
 <div class="question" data-qid="62" data-type="choice">
 <p><strong>62.</strong> The Shift Cipher is also commonly known by which historical name?</p>
@@ -740,7 +727,7 @@ For decryption use \(D(y)=a^{-1}(y-b)\bmod 26\). Spaces are preserved.</p>
 
 <div aria-live="polite" class="score" id="score"></div>
 <div id="submission-status" class="info" role="status" aria-live="polite" style="display:none; margin:16px 0;"></div>
-<p class="subtitle" style="margin:12px 0 8px">You can submit this quiz only once. Check your name and email before submitting.</p>
+<p class="subtitle" style="margin:12px 0 8px">You can submit this quiz only once. Check your name, email, and PIN before submitting.</p>
 <button id="submit-quiz-button" onclick="submitQuiz()">Submit Quiz</button>
 <button class="secondary" id="show-solutions-button" onclick="requestSolutions()" style="display:none">Show Solutions</button>
 <button class="secondary" onclick="resetWorksheet()">Reset</button>
@@ -929,9 +916,11 @@ function submitQuiz() {
 
     const name = document.getElementById("student-name").value.trim();
     const email = document.getElementById("student-email").value.trim();
-    if (!name || !email) {
-        alert("Please enter your name and email before submitting.");
-        (!name ? document.getElementById("student-name") : document.getElementById("student-email")).focus();
+    const pin = document.getElementById("student-pin").value.trim();
+
+    if (!name || !email || !pin) {
+        alert("Please enter your name, email, and secret access PIN before submitting.");
+        (!name ? document.getElementById("student-name") : !email ? document.getElementById("student-email") : document.getElementById("student-pin")).focus();
         return;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -959,14 +948,6 @@ function submitQuiz() {
     });
     const responses = answers.map((answer, i) => ({ question: i + 1, answer }));
 
-    const payload = {
-        name,
-        email,
-        date: document.getElementById("student-date").value.trim(),
-        responses,
-        userAgent: navigator.userAgent
-    };
-
     const status = document.getElementById("submission-status");
     const submitButton = document.getElementById("submit-quiz-button");
     status.style.display = "block";
@@ -974,10 +955,11 @@ function submitQuiz() {
     submitButton.disabled = true;
 
     const compact = JSON.stringify({
-        name: payload.name,
-        email: payload.email,
-        date: payload.date,
-        responses: payload.responses.map(r => r.answer)
+        name: name,
+        email: email,
+        pin: pin,
+        date: document.getElementById("student-date").value.trim(),
+        responses: responses.map(r => r.answer)
     });
 
     const callbackName = "quizCallback_" + Date.now();
@@ -995,8 +977,8 @@ function submitQuiz() {
     function failUnconfirmed(reason) {
         if (finished) return;
         cleanup();
-        status.textContent = "We could not confirm the submission, but your answers may have been received. Please tell your instructor before submitting again." +
-            (reason ? " (Details for your instructor: " + reason + ")" : "");
+        status.textContent = "We could not confirm the submission, but your answers may have been received. Please check with your instructor before submitting again." +
+            (reason ? " (Details: " + reason + ")" : "");
         submitButton.disabled = false;
     }
 
@@ -1012,7 +994,7 @@ function submitQuiz() {
                 " (" + finalPercentage + "%).";
             document.getElementById("score").textContent =
                 "Final Score: " + finalScore + " / " + finalTotal + " (" + finalPercentage + "%)";
-            document.querySelectorAll(".question input, #student-name, #student-email, #student-date").forEach(el => el.disabled = true);
+            document.querySelectorAll(".question input, #student-name, #student-email, #student-pin, #student-date").forEach(el => el.disabled = true);
             submitButton.textContent = "Quiz Submitted";
             reviewToken = String(result.token || "");
             reviewEmail = email;
@@ -1023,7 +1005,7 @@ function submitQuiz() {
             }
             document.getElementById("score").scrollIntoView({behavior: "smooth", block: "center"});
         } else {
-            status.textContent = (result && result.message) || "Submission failed. Please try again or contact your instructor.";
+            status.textContent = (result && result.message) || "Submission failed. Please check your PIN or email and try again.";
             submitButton.disabled = false;
         }
     };
@@ -1034,7 +1016,7 @@ function submitQuiz() {
     };
     scriptEl.onload = function () {
         setTimeout(function () {
-            failUnconfirmed("the server replied in the wrong format. The Apps Script deployment is probably not set to 'Anyone' or is still running an old version");
+            failUnconfirmed("the server replied in the wrong format.");
         }, 800);
     };
     scriptEl.src = GOOGLE_APPS_SCRIPT_URL +
@@ -1051,6 +1033,7 @@ function resetWorksheet() {
     }
     document.getElementById("student-name").value = "";
     document.getElementById("student-email").value = "";
+    document.getElementById("student-pin").value = "";
     document.getElementById("student-date").value = "";
     const submissionStatus = document.getElementById("submission-status");
     submissionStatus.style.display = "none";
