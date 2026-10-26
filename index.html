@@ -129,7 +129,7 @@
     @media print {
         body { background: white; padding: 0; }
         .container { box-shadow: none; }
-        button, .result, .solution { display: none !important; }
+        button, .result, .solution, #returning, #deadline-notice { display: none !important; }
         input[type="text"] { border: 1px solid #777; background: transparent; }
         .user-info-field input[type="text"] { border-bottom: 1px solid #777; background: transparent; }
     }
@@ -139,6 +139,16 @@
 <div class="container">
 <h1>Cryptography Practice</h1>
 <p class="subtitle">Shift, Affine, RSA, Digital Signatures, and Vigenère Ciphers — Practice Worksheet</p>
+<p class="subtitle"><strong>Deadline:</strong> 30 October 2026, 11:59 PM IST. Solutions become available after the deadline.</p>
+<div class="info" id="deadline-notice" role="status" style="display:none"></div>
+<details id="returning" style="margin:14px 0; font-family:system-ui,sans-serif; font-size:15px;">
+<summary><strong>Already submitted?</strong> View your solutions here (available after the deadline)</summary>
+<div style="margin-top:10px; display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
+<input id="returning-email" type="email" placeholder="Email you used for the quiz" autocomplete="email" style="flex:1; min-width:240px; padding:8px 10px;"/>
+<button id="returning-button" type="button" onclick="viewSolutionsReturning()">Show Solutions</button>
+</div>
+<div class="info" id="returning-status" role="status" aria-live="polite" style="display:none; margin-top:10px;"></div>
+</details>
 <div class="user-info-row">
 <div class="user-info-field">
 <label for="student-name"><strong>Name:</strong></label>
@@ -752,6 +762,17 @@ let quizSubmitted = false;
 let reviewToken = "";
 let reviewEmail = "";
 const TOTAL_QUESTIONS = 77;
+// Keep these in step with QUIZ_DEADLINE / DEADLINE_TEXT in Code.gs.
+const DEADLINE_MS = Date.parse("2026-10-30T23:59:59+05:30");
+const DEADLINE_TEXT = "30 October 2026, 11:59 PM IST";
+
+// Remember this browser's submission so the student can come back after the deadline.
+function saveResult(email, token) {
+    try { localStorage.setItem("cryptoQuizSaved", JSON.stringify({ email: email, token: token })); } catch (e) {}
+}
+function savedResult() {
+    try { return JSON.parse(localStorage.getItem("cryptoQuizSaved") || "null"); } catch (e) { return null; }
+}
 
 // Shuffle the questions inside each part, freshly for every page load. Questions stay under
 // their own heading and reference box (e.g. the RSA formulas), so nothing loses its context.
@@ -784,12 +805,8 @@ const TOTAL_QUESTIONS = 77;
     });
 })();
 
-// Solutions are requested only when the student clicks "Show Solutions" after submitting.
-// The server releases them only against the private token issued with that submission.
-function requestSolutions() {
-    const button = document.getElementById("show-solutions-button");
-    const status = document.getElementById("submission-status");
-    if (!quizSubmitted || !reviewToken) return;
+// Solutions are released by the server only after the deadline, and only to students who submitted.
+function loadSolutions(email, token, status, button) {
     button.disabled = true;
     status.style.display = "block";
     status.textContent = "Loading solutions…";
@@ -813,8 +830,13 @@ function requestSolutions() {
         if (done) return;
         finish();
         if (result && result.success && Array.isArray(result.review)) {
-            showReview(result.review);
-            status.textContent = "Solutions are shown below each question.";
+            showReview(result.review, result.answers);
+            if (result.full) {
+                document.getElementById("score").textContent = "Final Score: " + result.score + " / " + result.total + " (" + result.percentage + "%)";
+                status.textContent = "Your answers, marks and the solutions are shown below each question.";
+            } else {
+                status.textContent = "Solutions are shown below each question. Your own answers and marks appear only in the browser you submitted from.";
+            }
             button.textContent = "Solutions Shown";
             document.querySelector(".question").scrollIntoView({behavior: "smooth", block: "start"});
         } else {
@@ -830,25 +852,62 @@ function requestSolutions() {
     };
     el.src = GOOGLE_APPS_SCRIPT_URL +
         "?action=solutions&callback=" + encodeURIComponent(cb) +
-        "&email=" + encodeURIComponent(reviewEmail) +
-        "&token=" + encodeURIComponent(reviewToken);
+        "&email=" + encodeURIComponent(email) +
+        "&token=" + encodeURIComponent(token || "");
     timer = setTimeout(function () { fail("Loading the solutions timed out. Please try again."); }, 30000);
     document.body.appendChild(el);
 }
 
+// "Show Solutions" button that appears right after submitting.
+function requestSolutions() {
+    if (!quizSubmitted || !reviewToken) return;
+    loadSolutions(reviewEmail, reviewToken,
+        document.getElementById("submission-status"),
+        document.getElementById("show-solutions-button"));
+}
+
+// "Already submitted?" panel, for students returning after the deadline.
+function viewSolutionsReturning() {
+    const status = document.getElementById("returning-status");
+    const email = document.getElementById("returning-email").value.trim();
+    if (!email) {
+        status.style.display = "block";
+        status.textContent = "Please enter the email address you used for the quiz.";
+        return;
+    }
+    const saved = savedResult();
+    const token = (saved && saved.email && saved.email.toLowerCase() === email.toLowerCase()) ? saved.token : "";
+    loadSolutions(email, token, status, document.getElementById("returning-button"));
+}
+
 // Shows each question's result and its solution (called after the server releases them).
-function showReview(review) {
+// 'answers' (only sent to the browser that submitted) refills the student's own answers.
+function showReview(review, answers) {
     document.querySelectorAll(".question").forEach(q => {
-        const item = review[Number(q.dataset.qid) - 1];
+        const qid = Number(q.dataset.qid);
+        const item = review[qid - 1];
         if (!item) return;
-        const result = q.querySelector(".result");
         const type = q.dataset.type;
+
+        if (Array.isArray(answers)) {
+            const a = answers[qid - 1] || "";
+            if (type === "choice") {
+                q.querySelectorAll('input[type="radio"]').forEach(r => { r.checked = (r.value === a); r.disabled = true; });
+            } else {
+                const field = q.querySelector("input");
+                if (field) { field.value = a; field.disabled = true; }
+            }
+        }
+
+        const result = q.querySelector(".result");
         const input = type === "choice"
             ? q.querySelector('input[type="radio"]:checked')
             : q.querySelector("input");
         const given = input ? input.value.trim() : "";
         q.classList.remove("correct", "incorrect");
-        if (item.c) {
+        if (item.c === null || item.c === undefined) {
+            result.textContent = "";            // solution only: no marks for this browser
+        } else if (item.c) {
             result.textContent = "Correct!";
             result.style.color = "#15803d";
             q.classList.add("correct");
@@ -857,6 +916,7 @@ function showReview(review) {
             result.style.color = "#b91c1c";
             q.classList.add("incorrect");
         }
+
         let box = q.querySelector(".solution");
         if (!box) {
             box = document.createElement("div");
@@ -965,7 +1025,8 @@ function submitQuiz() {
             reviewToken = String(result.token || "");
             reviewEmail = email;
             if (reviewToken) {
-                status.textContent += " Click \"Show Solutions\" when you are ready to review.";
+                saveResult(email, reviewToken);
+                status.textContent += " Solutions will be available after the deadline (" + DEADLINE_TEXT + "). Come back to this page then and click \"Show Solutions\" (or use \"Already submitted?\" at the top).";
                 document.getElementById("show-solutions-button").style.display = "inline-block";
             }
             document.getElementById("score").scrollIntoView({behavior: "smooth", block: "center"});
@@ -1003,7 +1064,7 @@ function resetWorksheet() {
     const submissionStatus = document.getElementById("submission-status");
     submissionStatus.style.display = "none";
     submissionStatus.textContent = "";
-    document.getElementById("submit-quiz-button").disabled = false;
+    document.getElementById("submit-quiz-button").disabled = Date.now() > DEADLINE_MS;
     document.querySelectorAll(".question").forEach(q => {
         q.querySelectorAll("input").forEach(input => {
             if (input.type === "radio" || input.type === "checkbox") input.checked = false;
@@ -1049,6 +1110,20 @@ function printWorksheet() {
         printWindow.close();
     }, 400);
 }
+
+(function initDeadlineUI() {
+    const saved = savedResult();
+    if (saved && saved.email) document.getElementById("returning-email").value = saved.email;
+    if (Date.now() > DEADLINE_MS) {
+        const notice = document.getElementById("deadline-notice");
+        notice.style.display = "block";
+        notice.textContent = "The deadline (" + DEADLINE_TEXT + ") has passed and submissions are closed. If you submitted the quiz, use \"Already submitted?\" above to view your solutions.";
+        document.getElementById("returning").open = true;
+        const submitBtn = document.getElementById("submit-quiz-button");
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Submissions Closed";
+    }
+})();
 </script>
 </body>
 </html>
