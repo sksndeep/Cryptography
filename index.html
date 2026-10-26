@@ -156,7 +156,7 @@
 </div>
 <div class="user-info-field">
 <label for="student-email"><strong>Email:</strong></label>
-<input id="student-email" placeholder="Enter your email" type="email" autocomplete="email" required/>
+<input id="student-email" placeholder="Enter your email (@dau.ac.in)" type="email" autocomplete="email" required/>
 </div>
 <div class="user-info-field">
 <label for="student-date"><strong>Date:</strong></label>
@@ -756,17 +756,14 @@ For decryption use \(D(y)=a^{-1}(y-b)\bmod 26\). Spaces are preserved.</p>
     </footer>
 </div>
 <script>
-// IMPORTANT: After deploying the Google Apps Script web app, paste its /exec URL here.
 const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxRaDDt9Rc5eylP_GP0Xm5nVdPqv4mpsh1BmMqZwoXLpXB-w-9sGOtBkSQ3jIl6YrRSOg/exec";
 let quizSubmitted = false;
 let reviewToken = "";
 let reviewEmail = "";
 const TOTAL_QUESTIONS = 77;
-// Keep these in step with QUIZ_DEADLINE / DEADLINE_TEXT in Code.gs.
 const DEADLINE_MS = Date.parse("2026-10-30T23:59:59+05:30");
 const DEADLINE_TEXT = "30 October 2026, 11:59 PM IST";
 
-// Remember this browser's submission so the student can come back after the deadline.
 function saveResult(email, token) {
     try { localStorage.setItem("cryptoQuizSaved", JSON.stringify({ email: email, token: token })); } catch (e) {}
 }
@@ -774,8 +771,6 @@ function savedResult() {
     try { return JSON.parse(localStorage.getItem("cryptoQuizSaved") || "null"); } catch (e) { return null; }
 }
 
-// Shuffle the questions inside each part, freshly for every page load. Questions stay under
-// their own heading and reference box (e.g. the RSA formulas), so nothing loses its context.
 (function shuffleWithinParts() {
     const container = document.querySelector(".container");
     const runs = [];
@@ -798,14 +793,12 @@ function savedResult() {
         anchor.remove();
     });
 
-    // Renumber what the student sees 1..77 (the hidden data-qid keeps the original number).
     document.querySelectorAll(".question").forEach((q, index) => {
         const label = q.querySelector("p > strong");
         if (label) label.textContent = label.textContent.replace(/^\d+/, String(index + 1));
     });
 })();
 
-// Solutions are released by the server only after the deadline, and only to students who submitted.
 function loadSolutions(email, token, status, button) {
     button.disabled = true;
     status.style.display = "block";
@@ -858,7 +851,6 @@ function loadSolutions(email, token, status, button) {
     document.body.appendChild(el);
 }
 
-// "Show Solutions" button that appears right after submitting.
 function requestSolutions() {
     if (!quizSubmitted || !reviewToken) return;
     loadSolutions(reviewEmail, reviewToken,
@@ -866,7 +858,6 @@ function requestSolutions() {
         document.getElementById("show-solutions-button"));
 }
 
-// "Already submitted?" panel, for students returning after the deadline.
 function viewSolutionsReturning() {
     const status = document.getElementById("returning-status");
     const email = document.getElementById("returning-email").value.trim();
@@ -880,8 +871,6 @@ function viewSolutionsReturning() {
     loadSolutions(email, token, status, document.getElementById("returning-button"));
 }
 
-// Shows each question's result and its solution (called after the server releases them).
-// 'answers' (only sent to the browser that submitted) refills the student's own answers.
 function showReview(review, answers) {
     document.querySelectorAll(".question").forEach(q => {
         const qid = Number(q.dataset.qid);
@@ -906,7 +895,7 @@ function showReview(review, answers) {
         const given = input ? input.value.trim() : "";
         q.classList.remove("correct", "incorrect");
         if (item.c === null || item.c === undefined) {
-            result.textContent = "";            // solution only: no marks for this browser
+            result.textContent = "";
         } else if (item.c) {
             result.textContent = "Correct!";
             result.style.color = "#15803d";
@@ -950,12 +939,16 @@ function submitQuiz() {
         document.getElementById("student-email").focus();
         return;
     }
+    if (!email.toLowerCase().endsWith("@dau.ac.in")) {
+        alert("Only email addresses from the domain @dau.ac.in are allowed to submit.");
+        document.getElementById("student-email").focus();
+        return;
+    }
     if (GOOGLE_APPS_SCRIPT_URL.includes("PASTE_YOUR_GOOGLE_APPS_SCRIPT")) {
         alert("The quiz is not connected to Google Sheets yet. Your instructor must add the deployed Apps Script URL to this HTML file.");
         return;
     }
 
-    // Answers are sent in ORIGINAL question order (by data-qid), whatever order this student saw.
     const answers = new Array(TOTAL_QUESTIONS).fill("");
     document.querySelectorAll(".question").forEach(q => {
         const type = q.dataset.type;
@@ -980,7 +973,6 @@ function submitQuiz() {
     status.textContent = "Submitting your quiz… Please do not close this page.";
     submitButton.disabled = true;
 
-    // Send compactly: just the answers, in order. Grading happens on the server.
     const compact = JSON.stringify({
         name: payload.name,
         email: payload.email,
@@ -1041,7 +1033,6 @@ function submitQuiz() {
         failUnconfirmed("could not reach the server, or the request was blocked");
     };
     scriptEl.onload = function () {
-        // The server answered, but the reply did not call our callback.
         setTimeout(function () {
             failUnconfirmed("the server replied in the wrong format. The Apps Script deployment is probably not set to 'Anyone' or is still running an old version");
         }, 800);
