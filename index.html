@@ -1037,17 +1037,28 @@ function submitQuiz() {
             const finalScore = Number(result.score);
             const finalTotal = Number(result.total);
             const finalPercentage = Number(result.percentage);
-            status.textContent = "Submission received. Your score is " + finalScore + " / " + finalTotal +
-                " (" + finalPercentage + "%).";
+            
+            // Build a clean summary of what the student submitted
+            let summaryHTML = "<h3>Submission Summary</h3><p>Here are the answers you submitted:</p><ul style='text-align: left; max-height: 250px; overflow-y: auto; padding-left: 20px;'>";
+            responses.forEach((r) => {
+                summaryHTML += `<li><strong>Q${r.question}:</strong> ${r.answer ? r.answer : '<em>No answer</em>'}</li>`;
+            });
+            summaryHTML += "</ul>";
+
+            status.innerHTML = "Submission received! Your score is <strong>" + finalScore + " / " + finalTotal + 
+                " (" + finalPercentage + "%)</strong>.<br><br>" + summaryHTML;
+                
             document.getElementById("score").textContent =
                 "Final Score: " + finalScore + " / " + finalTotal + " (" + finalPercentage + "%)";
+                
             document.querySelectorAll(".question input, #student-name, #student-email, #student-pin, #student-date").forEach(el => el.disabled = true);
             submitButton.textContent = "Quiz Submitted";
             reviewToken = String(result.token || "");
             reviewEmail = email;
+            
             if (reviewToken) {
                 saveResult(email, reviewToken);
-                status.textContent += " Solutions will be available after the deadline (" + DEADLINE_TEXT + ").";
+                status.innerHTML += "<p style='margin-top:15px;'>Solutions will become available after the deadline (" + DEADLINE_TEXT + ").</p>";
                 document.getElementById("show-solutions-button").style.display = "inline-block";
             }
             document.getElementById("score").scrollIntoView({behavior: "smooth", block: "center"});
