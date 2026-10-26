@@ -127,6 +127,9 @@
     }
     .question.correct { border-color: #86efac; }
     .question.incorrect { border-color: #fca5a5; }
+    #quiz-content-area {
+        display: none; /* Hidden until PIN is validated */
+    }
     @media print {
         body { background: white; padding: 0; }
         .container { box-shadow: none; }
@@ -140,10 +143,11 @@
 <div class="container">
 <h1>Cryptography Practice</h1>
 <p class="subtitle">Shift, Affine, RSA, Digital Signatures, and Vigenère Ciphers — Practice Worksheet</p>
-<p class="subtitle"><strong>Deadline:</strong> 30 October 2026, 11:59 PM IST. Solutions become available after the deadline.</p>
+<p class="subtitle"><strong>Deadline:</strong> 30 October 2026, 11:59 PM IST. Solutions become available after the deadline[cite: 1].</p>
 <div class="info" id="deadline-notice" role="status" style="display:none"></div>
+
 <details id="returning" style="margin:14px 0; font-family:system-ui,sans-serif; font-size:15px;">
-<summary><strong>Already submitted?</strong> View your solutions here (available after the deadline)</summary>
+<summary><strong>Already submitted?</strong> View your solutions here (available after the deadline)[cite: 1]</summary>
 <div style="margin-top:10px; display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
 <input id="returning-email" type="email" placeholder="Email you used for the quiz" autocomplete="email" style="flex:1; min-width:240px; padding:8px 10px;"/>
 <button id="returning-button" type="button" onclick="viewSolutionsReturning()">Show Solutions</button>
@@ -151,25 +155,33 @@
 <div class="info" id="returning-status" role="status" aria-live="polite" style="display:none; margin-top:10px;"></div>
 </details>
 
-<div class="user-info-row">
-<div class="user-info-field">
-<label for="student-name"><strong>Name:</strong></label>
-<input id="student-name" placeholder="Enter your name" type="text" autocomplete="name" required/>
-</div>
-<div class="user-info-field">
-<label for="student-email"><strong>Email:</strong></label>
-<input id="student-email" placeholder="Enter your @dau.ac.in email" type="email" autocomplete="email" required/>
-</div>
-<div class="user-info-field">
-<label for="student-pin"><strong>Access PIN:</strong></label>
-<input id="student-pin" placeholder="Enter your secret PIN" type="password" required/>
-</div>
-<div class="user-info-field">
-<label for="student-date"><strong>Date:</strong></label>
-<input id="student-date" placeholder="Enter date" type="text"/>
-</div>
+<!-- LOGIN GATE PANEL -->
+<div id="login-gate" class="info" style="margin: 20px 0; background: #fff; border: 2px solid #2563eb;">
+  <h3>Student Authentication</h3>
+  <p>Please enter your official details to unlock the quiz. Tab-switching is monitored once unlocked.</p>
+  <div class="user-info-row" style="margin: 10px 0;">
+    <div class="user-info-field">
+      <label for="student-name"><strong>Name:</strong></label>
+      <input id="student-name" placeholder="Enter your name" type="text" autocomplete="name" required/>
+    </div>
+    <div class="user-info-field">
+      <label for="student-email"><strong>Email:</strong></label>
+      <input id="student-email" placeholder="Enter your @dau.ac.in email" type="email" autocomplete="email" required/>
+    </div>
+    <div class="user-info-field">
+      <label for="student-pin"><strong>Access PIN:</strong></label>
+      <input id="student-pin" placeholder="Enter your secret PIN" type="password" required/>
+    </div>
+    <div class="user-info-field">
+      <label for="student-date"><strong>Date:</strong></label>
+      <input id="student-date" placeholder="Enter date" type="text"/>
+    </div>
+  </div>
+  <button type="button" onclick="unlockQuiz()">Start Quiz</button>
 </div>
 
+<!-- QUIZ CONTENT AREA (Hidden initially) -->
+<div id="quiz-content-area">
 <div class="info">
 <strong>Instructions</strong>
 <p>
@@ -727,7 +739,7 @@ For decryption use \(D(y)=a^{-1}(y-b)\bmod 26\). Spaces are preserved.</p>
 
 <div aria-live="polite" class="score" id="score"></div>
 <div id="submission-status" class="info" role="status" aria-live="polite" style="display:none; margin:16px 0;"></div>
-<p class="subtitle" style="margin:12px 0 8px">You can submit this quiz only once. Check your name, email, and PIN before submitting.</p>
+<p class="subtitle" style="margin:12px 0 8px">You can submit this quiz only once. Check your details before submitting.</p>
 <button id="submit-quiz-button" onclick="submitQuiz()">Submit Quiz</button>
 <button class="secondary" id="show-solutions-button" onclick="requestSolutions()" style="display:none">Show Solutions</button>
 <button class="secondary" onclick="resetWorksheet()">Reset</button>
@@ -738,25 +750,28 @@ For decryption use \(D(y)=a^{-1}(y-b)\bmod 26\). Spaces are preserved.</p>
         Plain: A B C D E F G H I J K L M N O P Q R S T U V W X Y Z<br/>
         Index: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25
     </div>
+</div>
+
 <footer>
         Cryptography Practice Worksheet: Shift, Affine, RSA, Digital Signatures, and Vigenère Ciphers | Computer Science
     </footer>
-</div>
+
 <script>
 const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxRaDDt9Rc5eylP_GP0Xm5nVdPqv4mpsh1BmMqZwoXLpXB-w-9sGOtBkSQ3jIl6YrRSOg/exec";
 let quizSubmitted = false;
+let quizUnlocked = false; // Tracks if student has unlocked the quiz
 let reviewToken = "";
 let reviewEmail = "";
 const TOTAL_QUESTIONS = 77;
 const DEADLINE_MS = Date.parse("2026-10-30T23:59:59+05:30");
 const DEADLINE_TEXT = "30 October 2026, 11:59 PM IST";
 
-// Anti-cheating: Track tab switching / window blurring
+// Anti-cheating: Track tab switching / window blurring ONLY AFTER unlock
 let tabSwitchCount = 0;
 const MAX_ALLOWED_SWITCHES = 2;
 
 document.addEventListener("visibilitychange", function () {
-    if (document.hidden && !quizSubmitted) {
+    if (document.hidden && quizUnlocked && !quizSubmitted) {
         tabSwitchCount++;
         if (tabSwitchCount <= MAX_ALLOWED_SWITCHES) {
             alert("Warning " + tabSwitchCount + " of " + MAX_ALLOWED_SWITCHES + 
@@ -768,6 +783,27 @@ document.addEventListener("visibilitychange", function () {
     }
 });
 
+function unlockQuiz() {
+    const name = document.getElementById("student-name").value.trim();
+    const email = document.getElementById("student-email").value.trim();
+    const pin = document.getElementById("student-pin").value.trim();
+
+    if (!name || !email || !pin) {
+        alert("Please enter your name, email, and secret access PIN to unlock the quiz.");
+        return;
+    }
+    if (!email.toLowerCase().endsWith("@dau.ac.in")) {
+        alert("Only email addresses from the domain @dau.ac.in are allowed.");
+        return;
+    }
+
+    // Basic client-side check passed, reveal quiz questions
+    quizUnlocked = true;
+    document.getElementById("login-gate").style.display = "none";
+    document.getElementById("quiz-content-area").style.display = "block";
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 function saveResult(email, token) {
     try { localStorage.setItem("cryptoQuizSaved", JSON.stringify({ email: email, token: token })); } catch (e) {}
 }
@@ -776,7 +812,8 @@ function savedResult() {
 }
 
 (function shuffleWithinParts() {
-    const container = document.querySelector(".container");
+    const container = document.getElementById("quiz-content-area");
+    if (!container) return;
     const runs = [];
     let run = [];
     Array.from(container.children).forEach(el => {
@@ -937,21 +974,14 @@ function submitQuiz() {
 
     if (!name || !email || !pin) {
         alert("Please enter your name, email, and secret access PIN before submitting.");
-        (!name ? document.getElementById("student-name") : !email ? document.getElementById("student-email") : document.getElementById("student-pin")).focus();
-        return;
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        alert("Please enter a valid email address.");
-        document.getElementById("student-email").focus();
         return;
     }
     if (!email.toLowerCase().endsWith("@dau.ac.in")) {
         alert("Only email addresses from the domain @dau.ac.in are allowed to submit.");
-        document.getElementById("student-email").focus();
         return;
     }
     if (GOOGLE_APPS_SCRIPT_URL.includes("PASTE_YOUR_GOOGLE_APPS_SCRIPT")) {
-        alert("The quiz is not connected to Google Sheets yet. Your instructor must add the deployed Apps Script URL to this HTML file.");
+        alert("The quiz is not connected to Google Sheets yet.");
         return;
     }
 
@@ -1017,7 +1047,7 @@ function submitQuiz() {
             reviewEmail = email;
             if (reviewToken) {
                 saveResult(email, reviewToken);
-                status.textContent += " Solutions will be available after the deadline (" + DEADLINE_TEXT + "). Come back to this page then and click \"Show Solutions\" (or use \"Already submitted?\" at the top).";
+                status.textContent += " Solutions will be available after the deadline (" + DEADLINE_TEXT + ").";
                 document.getElementById("show-solutions-button").style.display = "inline-block";
             }
             document.getElementById("score").scrollIntoView({behavior: "smooth", block: "center"});
@@ -1052,45 +1082,24 @@ function resetWorksheet() {
     document.getElementById("student-email").value = "";
     document.getElementById("student-pin").value = "";
     document.getElementById("student-date").value = "";
+    document.getElementById("login-gate").style.display = "block";
+    document.getElementById("quiz-content-area").style.display = "none";
+    quizUnlocked = false;
     const submissionStatus = document.getElementById("submission-status");
     submissionStatus.style.display = "none";
     submissionStatus.textContent = "";
-    document.getElementById("submit-quiz-button").disabled = Date.now() > DEADLINE_MS;
-    document.querySelectorAll(".question").forEach(q => {
-        q.querySelectorAll("input").forEach(input => {
-            if (input.type === "radio" || input.type === "checkbox") input.checked = false;
-            else input.value = "";
-        });
-        q.querySelector(".result").textContent = "";
-        q.classList.remove("correct", "incorrect");
-        const sol = q.querySelector(".solution");
-        if (sol) sol.remove();
-    });
-    document.getElementById("score").textContent = "";
 }
 
 function printWorksheet() {
     const printWindow = window.open('', '_blank');
     if (!printWindow) {
-        alert("Pop-up blocker may have prevented printing. Please allow pop-ups for this site.");
+        alert("Pop-up blocker may have prevented printing.");
         return;
     }
     const containerClone = document.querySelector('.container').cloneNode(true);
-    const origInputs = document.querySelectorAll('input');
-    const cloneInputs = containerClone.querySelectorAll('input');
-    origInputs.forEach((orig, idx) => {
-        if (cloneInputs[idx]) {
-            cloneInputs[idx].setAttribute('value', orig.value);
-            cloneInputs[idx].value = orig.value;
-            if (orig.type === "radio" || orig.type === "checkbox") {
-                if (orig.checked) cloneInputs[idx].setAttribute('checked', 'checked');
-                else cloneInputs[idx].removeAttribute('checked');
-            }
-        }
-    });
     printWindow.document.write('<html><head><meta charset="utf-8"><title>Cryptography Practice Worksheet</title>');
     printWindow.document.write('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">');
-    printWindow.document.write('<style>' + document.querySelector('style').innerHTML + '</style>');
+    printWindow.document.write('<style>' + document.querySelector('style').innerHTML + '#quiz-content-area { display: block !important; }</style>');
     printWindow.document.write('</head><body>');
     printWindow.document.write(containerClone.outerHTML);
     printWindow.document.write('</body></html>');
@@ -1108,8 +1117,9 @@ function printWorksheet() {
     if (Date.now() > DEADLINE_MS) {
         const notice = document.getElementById("deadline-notice");
         notice.style.display = "block";
-        notice.textContent = "The deadline (" + DEADLINE_TEXT + ") has passed and submissions are closed. If you submitted the quiz, use \"Already submitted?\" above to view your solutions.";
+        notice.textContent = "The deadline (" + DEADLINE_TEXT + ") has passed and submissions are closed.";
         document.getElementById("returning").open = true;
+        document.getElementById("login-gate").style.display = "none";
         const submitBtn = document.getElementById("submit-quiz-button");
         submitBtn.disabled = true;
         submitBtn.textContent = "Submissions Closed";
