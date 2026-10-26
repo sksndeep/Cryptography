@@ -730,6 +730,7 @@ For decryption use \(D(y)=a^{-1}(y-b)\bmod 26\). Spaces are preserved.</p>
 
 <div aria-live="polite" class="score" id="score"></div>
 <div id="submission-status" class="info" role="status" aria-live="polite" style="display:none; margin:16px 0;"></div>
+<p class="subtitle" style="margin:12px 0 8px">You can submit this quiz only once. Check your name and email before submitting.</p>
 <button id="submit-quiz-button" onclick="submitQuiz()">Submit Quiz</button>
 <button class="secondary" id="show-solutions-button" onclick="requestSolutions()" style="display:none">Show Solutions</button>
 <button class="secondary" onclick="resetWorksheet()">Reset</button>
@@ -969,7 +970,7 @@ function submitQuiz() {
             }
             document.getElementById("score").scrollIntoView({behavior: "smooth", block: "center"});
         } else {
-            status.textContent = "Submission failed: " + ((result && result.message) || "Please try again or contact your instructor.");
+            status.textContent = (result && result.message) || "Submission failed. Please try again or contact your instructor.";
             submitButton.disabled = false;
         }
     };
