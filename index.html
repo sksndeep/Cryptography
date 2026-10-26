@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Cryptography Practice — Randomized Assessment</title>
+<title>Cryptography Practice — Shuffled Questions</title>
 <!-- KaTeX CSS for professional math rendering -->
 <link href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" rel="stylesheet"/>
 <!-- KaTeX JavaScript -->
@@ -75,7 +75,7 @@
         border-radius: 9px;
         padding: 15px;
         margin: 14px 0;
-        display: none;
+        display: none; /* Hidden until unlocked */
     }
     .question p { margin-top: 0; }
     input[type="text"] {
@@ -141,19 +141,19 @@
         .container { box-shadow: none; }
         button, .result, .solution, #returning, #deadline-notice, .sticky-alphabet { display: none !important; }
         input[type="text"] { border: 1px solid #777; background: transparent; }
-        .user-info-field input { border-bottom: 1px solid #777; background: transparent; }
+        .user-info-field input[type="text"] { border-bottom: 1px solid #777; background: transparent; }
     }
 </style>
 </head>
 <body>
 <div class="container">
 <h1>Cryptography Practice</h1>
-<p class="subtitle">Shift, Affine, RSA, Digital Signatures, and Vigenère Ciphers — Randomized Assessment</p>
-<p class="subtitle"><strong>Deadline:</strong> 30 October 2026, 11:59 PM IST.</p>
+<p class="subtitle">Shift, Affine, RSA, Digital Signatures, and Vigenère Ciphers — Shuffled Assessment</p>
+<p class="subtitle"><strong>Deadline:</strong> 30 October 2026, 11:59 PM IST. Solutions become available after the deadline.</p>
 <div class="info" id="deadline-notice" role="status" style="display:none"></div>
 
 <details id="returning" style="margin:14px 0; font-family:system-ui,sans-serif; font-size:15px;">
-<summary><strong>Already submitted?</strong> View your solutions here</summary>
+<summary><strong>Already submitted?</strong> View your solutions here (available after the deadline)</summary>
 <div style="margin-top:10px; display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
 <input id="returning-email" type="email" placeholder="Email you used for the quiz" autocomplete="email" style="flex:1; min-width:240px; padding:8px 10px;"/>
 <button id="returning-button" type="button" onclick="viewSolutionsReturning()">Show Solutions</button>
@@ -164,7 +164,7 @@
 <!-- LOGIN GATE PANEL -->
 <div id="login-gate" class="info" style="margin: 20px 0; background: #fff; border: 2px solid #2563eb;">
   <h3>Student Authentication</h3>
-  <p>Please enter your official details to unlock your personalized set of 12 questions. Tab-switching is monitored once unlocked.</p>
+  <p>Please enter your official details to unlock the assessment. Tab-switching is monitored once unlocked.</p>
   <div class="user-info-row" style="margin: 10px 0;">
     <div class="user-info-field">
       <label for="student-name"><strong>Name:</strong></label>
@@ -205,164 +205,216 @@
 </div>
 
 <div class="info">
-<strong>General Instructions</strong>
+<strong>General Instructions &amp; Cipher Type Descriptions</strong>
 <p>Assume \(A = 0, B = 1, \dots, Z = 25\). Wrap around after \(Z\). Preserve spaces between words where applicable.</p>
+<hr style="border: 0; border-top: 1px solid #bfdbfe; margin: 10px 0;">
+<p><strong>1. Shift (Caesar) Cipher:</strong> Each letter is moved a fixed number of places. Encryption: \(E(x)=(x+k)\bmod 26\). For example, with \(k=3\), A maps to D and DOG maps to GRJ.</p>
+<p><strong>2. Affine Cipher:</strong> Each letter \(x\) is transformed using \(E(x)=(ax+b)\bmod 26\), where \(\gcd(a,26)=1\). Decryption uses \(D(y)=a^{-1}(y-b)\bmod 26\).</p>
+<p><strong>3. Vigenère Cipher:</strong> A repeating keyword supplies a different shift for each letter. For example, using key BAD with plaintext CAT gives ciphertext DAW.</p>
+<p><strong>4. RSA Encryption:</strong> A public-key system; encryption computes \(C=M^e\bmod n\) and decryption computes \(M=C^d\bmod n\).</p>
+<p><strong>5. RSA Digital Signatures:</strong> A signer creates a signature using their private key (\(S=M^d\bmod n\)) and others verify it using the public key (\(S^e\bmod n=M\)).</p>
 </div>
 
-<!-- CONTAINER FOR SHUFFLED QUESTIONS -->
+<!-- CONTAINER HOLDING ALL 77 QUESTIONS -->
 <div id="questions-container">
-<!-- FULL 77-QUESTION POOL -->
 
-<!-- SHIFT CIPHERS -->
-<div class="question" data-qid="1" data-category="shift" data-type="text"><p><strong>Question:</strong> Plaintext: \(\text{ABC}\) | Key: \(23\)</p><input placeholder="Enter ciphertext" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="2" data-category="shift" data-type="text"><p><strong>Question:</strong> Plaintext: \(\text{CAT}\) | Key: \(3\)</p><input placeholder="Enter ciphertext" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="3" data-category="shift" data-type="text"><p><strong>Question:</strong> Plaintext: \(\text{HELLO}\) | Key: \(3\)</p><input placeholder="Enter ciphertext" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="4" data-category="shift" data-type="text"><p><strong>Question:</strong> Plaintext: \(\text{HELLO WORLD}\) | Key: \(5\)</p><input placeholder="Enter ciphertext" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="5" data-category="shift" data-type="text"><p><strong>Question:</strong> Plaintext: \(\text{THE QUICK BROWN FOX}\) | Key: \(3\)</p><input placeholder="Enter ciphertext" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="6" data-category="shift" data-type="text"><p><strong>Question:</strong> Ciphertext: \(\text{DEF}\) | Key: \(3\). Decrypt to plaintext.</p><input placeholder="Enter plaintext" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="7" data-category="shift" data-type="text"><p><strong>Question:</strong> Ciphertext: \(\text{FRPSXWHU}\) | Key: \(3\). Decrypt to plaintext.</p><input placeholder="Enter plaintext" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="8" data-category="shift" data-type="text"><p><strong>Question:</strong> Ciphertext: \(\text{FYYAHP}\) | Key: \(5\). Decrypt to plaintext.</p><input placeholder="Enter plaintext" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="9" data-category="shift" data-type="text"><p><strong>Question:</strong> Plaintext: \(\text{MEET ME}\) | Key: \(0\)</p><input placeholder="Enter ciphertext" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="10" data-category="shift" data-type="text"><p><strong>Question:</strong> Ciphertext: \(\text{WORLD}\) | Key: \(0\). Decrypt to plaintext.</p><input placeholder="Enter plaintext" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="11" data-category="shift" data-type="number"><p><strong>Question:</strong> Plaintext \(\text{A}\) became Ciphertext \(\text{D}\). Find shift key \(k\).</p><input placeholder="Enter k" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="12" data-category="shift" data-type="text"><p><strong>Question:</strong> Plaintext \(\text{SECRET CODE}\) | Key: \(26\)</p><input placeholder="Enter ciphertext" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="13" data-category="shift" data-type="text"><p><strong>Question:</strong> Encrypt \(\text{HELLO}\) with key \(10\).</p><input placeholder="Enter ciphertext" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="14" data-category="shift" data-type="number"><p><strong>Question:</strong> If key is \(3\), what is the decryption key \(k'\) modulo 26?</p><input placeholder="Enter decryption key" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="15" data-category="shift" data-type="text"><p><strong>Question:</strong> Encrypt \(\text{Zebra}\) with key \(1\).</p><input placeholder="Enter ciphertext" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="1" data-type="text"><p><strong>1.</strong> Plaintext: \(\text{ABC}\) | Key: \(23\)</p><input placeholder="Enter ciphertext" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="2" data-type="text"><p><strong>2.</strong> Plaintext: \(\text{CAT}\) | Key: \(3\)</p><input placeholder="Enter ciphertext" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="3" data-type="text"><p><strong>3.</strong> Plaintext: \(\text{HELLO}\) | Key: \(3\)</p><input placeholder="Enter ciphertext" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="4" data-type="text"><p><strong>4.</strong> Plaintext: \(\text{HELLO WORLD}\) | Key: \(5\)</p><input placeholder="Enter ciphertext" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="5" data-type="text"><p><strong>5.</strong> Plaintext: \(\text{THE QUICK BROWN FOX}\) | Key: \(3\)</p><input placeholder="Enter ciphertext" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="6" data-type="text"><p><strong>6.</strong> Ciphertext: \(\text{XYZ}\) | Key: \(23\). Decrypt to plaintext.</p><input placeholder="Enter plaintext" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="7" data-type="text"><p><strong>7.</strong> Ciphertext: \(\text{FRPSXWHU}\) | Key: \(3\). Decrypt to plaintext.</p><input placeholder="Enter plaintext" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="8" data-type="text"><p><strong>8.</strong> Ciphertext: \(\text{DWWDFN}\) | Key: \(3\). Decrypt to plaintext.</p><input placeholder="Enter plaintext" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="9" data-type="text"><p><strong>9.</strong> Ciphertext: \(\text{PHHW PH}\) | Key: \(3\). Decrypt to plaintext.</p><input placeholder="Enter plaintext" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="10" data-type="text"><p><strong>10.</strong> Ciphertext: \(\text{BTWQI}\) | Key: \(5\). Decrypt to plaintext.</p><input placeholder="Enter plaintext" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="11" data-type="number"><p><strong>11.</strong> Plaintext \(A\) becomes \(D\) after encryption. What is the shift key?</p><input placeholder="Enter the key" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="12" data-type="text"><p><strong>12.</strong> Decrypt \(\text{VHFUHW FRGH}\) using key \(3\).</p><input placeholder="Enter plaintext" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="13" data-type="text"><p><strong>13.</strong> Encrypt \(\text{HELLO}\) with key \(10\), then decrypt your result using the same key. What is the ciphertext?</p><input placeholder="Enter ciphertext" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="14" data-type="number"><p><strong>14.</strong> The letter \(A\) is encrypted as \(X\). What is the shift key, from \(0\) to \(25\)?</p><input placeholder="Enter the key" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="15" data-type="text"><p><strong>15.</strong> Encrypt \(\text{ZEBRA}\) using key \(1\).</p><input placeholder="Enter ciphertext" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="16" data-type="number"><p><strong>16. Key Generation:</strong> If \(p = 5\) and \(q = 11\), calculate \(n\).</p><input placeholder="Enter your answer" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="17" data-type="number"><p><strong>17. Euler's Totient:</strong> If \(p = 5\) and \(q = 11\), calculate \(\varphi(n)\).</p><input placeholder="Enter your answer" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="18" data-type="number"><p><strong>18. Private Exponent:</strong> Given \(e = 3\) and \(\varphi(n) = 40\), find \(d\) such that \(3d \equiv 1 \pmod{40}\).</p><input placeholder="Enter d" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="19" data-type="number"><p><strong>19. RSA Encryption:</strong> Given \(n = 33\), \(e = 3\), and plaintext \(M = 2\), calculate \(C = M^e \pmod{n}\).</p><input placeholder="Enter ciphertext C" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="20" data-type="number"><p><strong>20. RSA Decryption:</strong> Given \(n = 33\), \(d = 7\), and ciphertext \(C = 29\), calculate \(M = C^d \pmod{n}\).</p><input placeholder="Enter plaintext M" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="21" data-type="number"><p><strong>21. Public Exponent:</strong> If \(\varphi(n) = 40\), which of the following is a valid public exponent \(e\): \(3\), \(4\), or \(10\)?</p><input placeholder="Enter e" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="22" data-type="number"><p><strong>22. RSA Signature Calculation:</strong> Given \(n = 2537\) and private exponent \(d = 937\), compute the signed message block \(S\) for \(M = 0419\).</p><input placeholder="Enter signature block" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="23" data-type="number"><p><strong>23. RSA Signature Calculation:</strong> Given \(n = 2537\) and private exponent \(d = 937\), compute the signed message block \(S\) for \(M = 1204\).</p><input placeholder="Enter signature block" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="24" data-type="text"><p><strong>24. Vigenère Encryption:</strong> Use Vigenère cipher with key <strong>BLUE</strong> to encrypt <strong>SNOWFALL</strong>.</p><input placeholder="Enter ciphertext" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="25" data-type="text"><p><strong>25. Vigenère Decryption:</strong> Ciphertext <strong>OIKYWVHBX</strong> was produced using key <strong>HOT</strong>. What is the plaintext?</p><input placeholder="Enter plaintext" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="26" data-type="number"><p><strong>26. Signed &amp; Encrypted Message:</strong> Alice sends signed block \(S = 1756\) to Bob: \(C = S^{21} \pmod{3127}\). Compute \(C\).</p><input placeholder="Enter encrypted ciphertext block" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="27" data-type="number"><p><strong>27. Digital Signature Message:</strong> Alice signs \(M = 1804\) with \(d = 1183\) and \(n = 2867\). Compute signature block \(S\).</p><input placeholder="Enter signature block" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="28" data-type="text"><p><strong>28. RSA Block Encryption:</strong> Encrypt <strong>ATTACK</strong> using \(n = 2537\) and \(e = 13\). (Enter space-separated blocks)</p><input placeholder="Enter ciphertext blocks" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="29" data-type="text"><p><strong>29. RSA Block Decryption:</strong> Decrypt <strong>3185 2038 2460 2550</strong> with \(n = 53 \cdot 61\) and \(e = 17\).</p><input placeholder="Enter plaintext message" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="30" data-type="text"><p><strong>30. RSA Block Decryption:</strong> Decrypt <strong>0667 1947 0671</strong> with \(n = 43 \cdot 59\) and \(e = 13\).</p><input placeholder="Enter plaintext message" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="31" data-type="text"><p><strong>31. RSA Block Encryption:</strong> Encrypt <strong>UPLOAD</strong> using \(n = 3233\) and \(e = 17\).</p><input placeholder="Enter ciphertext blocks" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="32" data-type="number"><p><strong>32.</strong> The letter \(H\) is encrypted as \(A\). Find the shift key \(k\).</p><input placeholder="Enter the key" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="33" data-type="number"><p><strong>33.</strong> The letter \(A\) is encrypted as \(L\). Find the shift key \(k\).</p><input placeholder="Enter the key" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="34" data-type="text"><p><strong>34.</strong> Decrypt <strong>JROG PHGDO</strong> using shift key \(k=3\).</p><input placeholder="Enter plaintext" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="35" data-type="text"><p><strong>35.</strong> Encrypt <strong>THE QUICK BROWN FOX</strong> using shift key \(k=23\).</p><input placeholder="Enter ciphertext" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="36" data-type="text"><p><strong>36.</strong> Ciphertext is <strong>KHOOR</strong>. Recover the plaintext.</p><input placeholder="Enter plaintext" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="37" data-type="text"><p><strong>37.</strong> Decrypt <strong>CHEUD</strong> using shift key \(k=3\).</p><input placeholder="Enter plaintext" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="38" data-type="text"><p><strong>38.</strong> Using shift key \(k=25\), what letter does plaintext \(A\) become?</p><input placeholder="Enter the letter" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="39" data-type="text"><p><strong>39.</strong> Encrypt <strong>THIS IS A TEST</strong> using shift key \(k=5\).</p><input placeholder="Enter ciphertext" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="40" data-type="text"><p><strong>40.</strong> Decrypt <strong>PDWKHPDWLFV</strong> using shift key \(k=3\).</p><input placeholder="Enter plaintext" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="41" data-type="text"><p><strong>41.</strong> Encrypt <strong>CIPHER</strong> using shift key \(k=5\).</p><input placeholder="Enter ciphertext" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="42" data-type="number"><p><strong>42.</strong> For \(p=7\), \(q=11\), and \(e=7\), find \(d\) satisfying \(7d\equiv1\pmod{60}\).</p><input placeholder="Enter d" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="43" data-type="number"><p><strong>43.</strong> If \(\varphi(n)=120\), which of \(e=7,10,15\) is a valid public exponent?</p><input placeholder="Enter e" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="44" data-type="number"><p><strong>44.</strong> Given \(e=7\) and \(\varphi(n)=120\), find \(d\) such that \(7d\equiv1\pmod{120}\).</p><input placeholder="Enter d" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="45" data-type="number"><p><strong>45.</strong> Using \(n=33\) and \(d=7\), decrypt ciphertext \(C=13\).</p><input placeholder="Enter plaintext M" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="46" data-type="number"><p><strong>46.</strong> For \(p=11\) and \(q=13\), calculate \(\varphi(n)\).</p><input placeholder="Enter φ(n)" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="47" data-type="number"><p><strong>47.</strong> Using \(n=33\) and \(d=7\), calculate \(14^7\bmod33\).</p><input placeholder="Enter plaintext M" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="48" data-type="number"><p><strong>48.</strong> Using public key \((n,e)=(55,3)\), encrypt \(M=4\).</p><input placeholder="Enter ciphertext C" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="49" data-type="number"><p><strong>49.</strong> RSA uses \(p=5, q=11, e=3, d=27\). Encrypt \(M=7\), then decrypt. What plaintext is recovered?</p><input placeholder="Enter recovered plaintext" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="50" data-type="number"><p><strong>50.</strong> Let \(p=3, q=11, e=3\). Find the least positive private exponent \(d\).</p><input placeholder="Enter d" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="51" data-type="text"><p><strong>51.</strong> If \(\varphi(n)=36\) and \(e=5\), are they relatively prime? Enter COPRIME or NOT COPRIME.</p><input placeholder="Enter your answer" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="52" data-type="text"><p><strong>52.</strong> Student chooses \(p=7, q=11, e=12\). Is this valid? Enter VALID or INVALID.</p><input placeholder="VALID or INVALID" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="53" data-type="number"><p><strong>53.</strong> Let \(p=11\) and \(q=13\). Calculate \(n\).</p><input placeholder="Enter n" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="54" data-type="number"><p><strong>54.</strong> Using public key \((n,e)=(33,3)\), encrypt \(M=2\).</p><input placeholder="Enter ciphertext C" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="55" data-type="number"><p><strong>55.</strong> Using \(n=55\) and \(e=3\), encrypt \(M=9\).</p><input placeholder="Enter ciphertext C" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="56" data-type="text"><p><strong>56. Vigenère Decryption:</strong> Decrypt <strong>RIJVSUYVJN</strong> using keyword <strong>KEY</strong>.</p><input placeholder="Enter plaintext" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="57" data-type="text"><p><strong>57. Vigenère Decryption:</strong> Decrypt <strong>LXFOPVEFRNHR</strong> using keyword <strong>LEMON</strong>.</p><input placeholder="Enter plaintext" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="58" data-type="text"><p><strong>58. Vigenère Encryption:</strong> Encrypt <strong>MEETMEATNOON</strong> using keyword <strong>KEY</strong>.</p><input placeholder="Enter ciphertext" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="59" data-type="text"><p><strong>59. Vigenère Encryption:</strong> Encrypt <strong>ATTACKATDAWN</strong> using keyword <strong>LEMON</strong>.</p><input placeholder="Enter ciphertext" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="60" data-type="text"><p><strong>60. Vigenère Decryption:</strong> Decrypt <strong>EEVYQTL</strong> using keyword <strong>MATH</strong>.</p><input placeholder="Enter plaintext" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="61" data-type="text"><p><strong>61. Vigenère Encryption:</strong> Encrypt <strong>NETWORKSECURITY</strong> using keyword <strong>CIPHER</strong>.</p><input placeholder="Enter ciphertext" type="text"/><div class="result"></div></div>
 
-<!-- RSA CALCULATIONS -->
-<div class="question" data-qid="16" data-category="rsa-calc" data-type="number"><p><strong>Question:</strong> If \(p = 5\) and \(q = 11\), calculate \(n\).</p><input placeholder="Enter your answer" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="17" data-category="rsa-calc" data-type="number"><p><strong>Question:</strong> If \(p = 5\) and \(q = 11\), calculate \(\varphi(n)\).</p><input placeholder="Enter your answer" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="18" data-category="rsa-calc" data-type="number"><p><strong>Question:</strong> Given \(e = 3\) and \(\varphi(n) = 40\), find \(d\) such that \(3d \equiv 1 \pmod{40}\).</p><input placeholder="Enter d" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="19" data-category="rsa-calc" data-type="number"><p><strong>Question:</strong> Given \(n = 33\), \(e = 3\), and plaintext \(M = 2\), calculate \(C = M^e \pmod{n}\).</p><input placeholder="Enter ciphertext C" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="20" data-category="rsa-calc" data-type="number"><p><strong>Question:</strong> Given \(n = 33\), \(d = 7\), and ciphertext \(C = 29\), decrypt to find \(M = C^d \pmod{n}\).</p><input placeholder="Enter plaintext M" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="21" data-category="rsa-calc" data-type="number"><p><strong>Question:</strong> Which value is valid as public key exponent \(e\) for \(\varphi(n) = 40\)? (Options: 3, 4, 10)</p><input placeholder="Enter valid e" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="62" data-type="choice">
+<p><strong>62.</strong> The Shift Cipher is also commonly known by which historical name?</p>
+<div class="choices">
+<label><input name="q62" type="radio" value="A"/> A. Vigenère cipher</label><br/>
+<label><input name="q62" type="radio" value="B"/> B. Caesar cipher</label><br/>
+<label><input name="q62" type="radio" value="C"/> C. Hill cipher</label><br/>
+<label><input name="q62" type="radio" value="D"/> D. RSA cipher</label><br/>
+</div>
+<div class="result"></div>
+</div>
 
-<!-- RSA DIGITAL SIGNATURES -->
-<div class="question" data-qid="22" data-category="rsa-sig" data-type="number"><p><strong>Question:</strong> Given \(n = 2537\) and private exponent \(d = 937\), compute signed block \(S\) for \(M = 0419\).</p><input placeholder="Enter signature block" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="23" data-category="rsa-sig" data-type="number"><p><strong>Question:</strong> Given \(n = 2537\) and private exponent \(d = 937\), compute signed block \(S\) for \(M = 1204\).</p><input placeholder="Enter signature block" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="26" data-category="rsa-sig" data-type="number"><p><strong>Question:</strong> Alice sends signed block \(S = 1756\) using Bob's public key: \(C = S^{21} \pmod{3127}\). Compute \(C\).</p><input placeholder="Enter ciphertext block" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="27" data-category="rsa-sig" data-type="number"><p><strong>Question:</strong> Alice signs block \(M = 1804\) with \(d = 1183\) and \(n = 2867\). Compute signature block \(S\).</p><input placeholder="Enter signature block" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="63" data-type="choice">
+<p><strong>63.</strong> When a message is encrypted with the recipient’s public key and only the recipient can decrypt it, which security property is primarily provided?</p>
+<div class="choices">
+<label><input name="q63" type="radio" value="A"/> A. Authentication</label><br/>
+<label><input name="q63" type="radio" value="B"/> B. Confidentiality</label><br/>
+<label><input name="q63" type="radio" value="C"/> C. Availability</label><br/>
+<label><input name="q63" type="radio" value="D"/> D. Non-repudiation</label><br/>
+</div>
+<div class="result"></div>
+</div>
 
-<!-- VIGENÈRE CIPHERS -->
-<div class="question" data-qid="24" data-category="vigenere" data-type="text"><p><strong>Question:</strong> Use Vigenère cipher with key <strong>BLUE</strong> to encrypt <strong>SNOWFALL</strong>.</p><input placeholder="Enter ciphertext" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="25" data-category="vigenere" data-type="text"><p><strong>Question:</strong> Ciphertext <strong>OIKYWVHBX</strong> was produced using key <strong>HOT</strong>. What is the plaintext?</p><input placeholder="Enter plaintext" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="56" data-category="vigenere" data-type="text"><p><strong>Question:</strong> Decrypt <strong>RIJVSUYVJN</strong> using keyword <strong>KEY</strong>.</p><input placeholder="Enter plaintext" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="57" data-category="vigenere" data-type="text"><p><strong>Question:</strong> Encrypt <strong>ATTACKATDAWN</strong> using keyword <strong>LEMON</strong>.</p><input placeholder="Enter ciphertext" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="58" data-category="vigenere" data-type="text"><p><strong>Question:</strong> Encrypt <strong>MEETMEATNOON</strong> using keyword <strong>KEY</strong>.</p><input placeholder="Enter ciphertext" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="59" data-category="vigenere" data-type="text"><p><strong>Question:</strong> Decrypt <strong>LXFOPVEFRNHR</strong> using keyword <strong>LEMON</strong>.</p><input placeholder="Enter plaintext" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="60" data-category="vigenere" data-type="text"><p><strong>Question:</strong> Decrypt <strong>CVCKCFU</strong> using keyword <strong>KEY</strong>.</p><input placeholder="Enter plaintext" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="61" data-category="vigenere" data-type="text"><p><strong>Question:</strong> Encrypt <strong>FIRSTPROGRAMMING</strong> using keyword <strong>X</strong>.</p><input placeholder="Enter ciphertext" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="64" data-type="choice">
+<p><strong>64.</strong> What do the letters RSA stand for?</p>
+<div class="choices">
+<label><input name="q64" type="radio" value="A"/> A. Rivest, Shamir, Adleman</label><br/>
+<label><input name="q64" type="radio" value="B"/> B. Rivest, Shannon, Adleman</label><br/>
+<label><input name="q64" type="radio" value="C"/> C. Rabin, Shamir, Adleman</label><br/>
+<label><input name="q64" type="radio" value="D"/> D. Rivest, Smith, Anderson</label><br/>
+</div>
+<div class="result"></div>
+</div>
 
-<!-- RSA BLOCK CIPHERS -->
-<div class="question" data-qid="28" data-category="rsa-blocks" data-type="text"><p><strong>Question:</strong> Encrypt <strong>ATTACK</strong> using \(n = 2537\) and \(e = 13\). (Enter space-separated blocks)</p><input placeholder="Enter ciphertext blocks" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="29" data-category="rsa-blocks" data-type="text"><p><strong>Question:</strong> Decrypt ciphertext <strong>3185 2038 2460 2550</strong> with \(n = 53 \cdot 61\) and \(e = 17\).</p><input placeholder="Enter plaintext message" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="30" data-category="rsa-blocks" data-type="text"><p><strong>Question:</strong> Decrypt ciphertext <strong>0667 1947 0671</strong> with \(n = 43 \cdot 59\) and \(e = 13\).</p><input placeholder="Enter plaintext message" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="31" data-category="rsa-blocks" data-type="text"><p><strong>Question:</strong> Encrypt <strong>UPLOAD</strong> using \(n = 3233\) and \(e = 17\).</p><input placeholder="Enter ciphertext blocks" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="65" data-type="choice">
+<p><strong>65.</strong> Which security property concerns detecting unauthorized changes to a message?</p>
+<div class="choices">
+<label><input name="q65" type="radio" value="A"/> A. Confidentiality</label><br/>
+<label><input name="q65" type="radio" value="B"/> B. Availability</label><br/>
+<label><input name="q65" type="radio" value="C"/> C. Integrity</label><br/>
+<label><input name="q65" type="radio" value="D"/> D. Anonymity</label><br/>
+</div>
+<div class="result"></div>
+</div>
 
-<!-- ADDITIONAL SHIFT / RSA / CONCEPTUAL QUESTIONS (32 to 72) -->
-<div class="question" data-qid="32" data-category="shift" data-type="number"><p><strong>Question:</strong> Plaintext H (7) encrypted to Ciphertext A (0). Find shift key \(k\).</p><input placeholder="Enter k" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="33" data-category="shift" data-type="number"><p><strong>Question:</strong> Plaintext A (0) encrypted to Ciphertext L (11). Find shift key \(k\).</p><input placeholder="Enter k" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="34" data-category="shift" data-type="text"><p><strong>Question:</strong> Decrypt <strong>JQOF OGFCN</strong> with shift key \(2\).</p><input placeholder="Enter plaintext" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="35" data-category="shift" data-type="text"><p><strong>Question:</strong> Encrypt <strong>THE QUICK BROWN FOX</strong> with shift key \(23\).</p><input placeholder="Enter ciphertext" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="36" data-category="shift" data-type="text"><p><strong>Question:</strong> Decrypt <strong>KHOOR</strong> with shift key \(3\).</p><input placeholder="Enter plaintext" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="37" data-category="shift" data-type="text"><p><strong>Question:</strong> Decrypt <strong>AFCSB</strong> with shift key \(1\).</p><input placeholder="Enter plaintext" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="38" data-category="shift" data-type="text"><p><strong>Question:</strong> Encrypt <strong>A</strong> with shift key \(25\).</p><input placeholder="Enter ciphertext" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="39" data-category="shift" data-type="text"><p><strong>Question:</strong> Encrypt <strong>THIS IS A TEST</strong> with shift key \(5\).</p><input placeholder="Enter ciphertext" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="40" data-category="shift" data-type="text"><p><strong>Question:</strong> Decrypt <strong>PDWKHPDWLFV</strong> with shift key \(3\).</p><input placeholder="Enter plaintext" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="41" data-category="shift" data-type="text"><p><strong>Question:</strong> Encrypt <strong>CIPHER</strong> with shift key \(6\).</p><input placeholder="Enter ciphertext" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="66" data-type="choice">
+<p><strong>66.</strong> What is the standard name of the arithmetic function φ(n), used when choosing RSA exponents?</p>
+<div class="choices">
+<label><input name="q66" type="radio" value="A"/> A. Euler’s totient function</label><br/>
+<label><input name="q66" type="radio" value="B"/> B. Euclidean distance function</label><br/>
+<label><input name="q66" type="radio" value="C"/> C. Euler’s path function</label><br/>
+<label><input name="q66" type="radio" value="D"/> D. Fermat’s sequence function</label><br/>
+</div>
+<div class="result"></div>
+</div>
 
-<div class="question" data-qid="42" data-category="rsa-calc" data-type="number"><p><strong>Question:</strong> Given \(p = 7, q = 11, e = 7\). Find private exponent \(d\).</p><input placeholder="Enter d" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="43" data-category="rsa-calc" data-type="number"><p><strong>Question:</strong> If \(p = 11, q = 13\), which value of \(e\) is coprime to \(\varphi(n)\)? (Options: 5, 7, 10)</p><input placeholder="Enter valid e" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="44" data-category="rsa-calc" data-type="number"><p><strong>Question:</strong> Given \(p = 11, q = 13, e = 7\). Compute private exponent \(d\).</p><input placeholder="Enter d" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="45" data-category="rsa-calc" data-type="number"><p><strong>Question:</strong> Given \(n = 33, d = 7, C = 13\). Compute plaintext \(M = C^d \pmod{n}\).</p><input placeholder="Enter M" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="46" data-category="rsa-calc" data-type="number"><p><strong>Question:</strong> Given \(p = 11, q = 13\). Calculate \(\varphi(n)\).</p><input placeholder="Enter totient" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="47" data-category="rsa-calc" data-type="number"><p><strong>Question:</strong> Given \(n = 33, d = 7, C = 14\). Compute plaintext \(M = C^d \pmod{n}\).</p><input placeholder="Enter M" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="48" data-category="rsa-calc" data-type="number"><p><strong>Question:</strong> Given \(n = 55, e = 3, M = 4\). Compute ciphertext \(C = M^e \pmod{n}\).</p><input placeholder="Enter C" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="49" data-category="rsa-calc" data-type="number"><p><strong>Question:</strong> Given \(n = 55, e = 3, d = 27, C = 13\). Compute plaintext \(M = C^d \pmod{n}\).</p><input placeholder="Enter M" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="50" data-category="rsa-calc" data-type="number"><p><strong>Question:</strong> Given \(p = 3, q = 11, e = 3\). Find private exponent \(d\).</p><input placeholder="Enter d" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="51" data-category="rsa-calc" data-type="text"><p><strong>Question:</strong> Is \(e = 5\) valid for \(\varphi(n) = 36\)? (Enter COPRIME or INVALID)</p><input placeholder="Enter COPRIME or INVALID" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="52" data-category="rsa-calc" data-type="text"><p><strong>Question:</strong> Is \(e = 12\) valid for \(\varphi(n) = 60\)? (Enter COPRIME or INVALID)</p><input placeholder="Enter COPRIME or INVALID" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="53" data-category="rsa-calc" data-type="number"><p><strong>Question:</strong> Given primes \(p = 11, q = 13\), calculate RSA modulus \(n\).</p><input placeholder="Enter n" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="54" data-category="rsa-calc" data-type="number"><p><strong>Question:</strong> Given \(n = 33, e = 3, M = 2\). Calculate ciphertext \(C\).</p><input placeholder="Enter C" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="55" data-category="rsa-calc" data-type="number"><p><strong>Question:</strong> Given \(n = 55, e = 3, M = 9\). Calculate ciphertext \(C\).</p><input placeholder="Enter C" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="67" data-type="choice">
+<p><strong>67.</strong> Which RSA key may be distributed openly?</p>
+<div class="choices">
+<label><input name="q67" type="radio" value="A"/> A. Private key</label><br/>
+<label><input name="q67" type="radio" value="B"/> B. Public key</label><br/>
+<label><input name="q67" type="radio" value="C"/> C. Both keys must be secret</label><br/>
+<label><input name="q67" type="radio" value="D"/> D. Neither key can be shared</label><br/>
+</div>
+<div class="result"></div>
+</div>
 
-<div class="question" data-qid="62" data-category="rsa-sig" data-type="choice"><p><strong>Question:</strong> Shift ciphers are a special case of which historical cipher class? <br/>A) Vigenère cipher <br/>B) Caesar cipher <br/>C) Affine cipher</p>
-<label><input name="q62" type="radio" value="A"/> A</label><br/>
-<label><input name="q62" type="radio" value="B"/> B</label><br/>
-<label><input name="q62" type="radio" value="C"/> C</label>
-<div class="result"></div></div>
+<div class="question" data-qid="68" data-type="choice">
+<p><strong>68.</strong> The classical Vigenère cipher is generally classified as which type of cipher?</p>
+<div class="choices">
+<label><input name="q68" type="radio" value="A"/> A. Monoalphabetic</label><br/>
+<label><input name="q68" type="radio" value="B"/> B. Polyalphabetic</label><br/>
+<label><input name="q68" type="radio" value="C"/> C. Transposition</label><br/>
+<label><input name="q68" type="radio" value="D"/> D. One-time pad</label><br/>
+</div>
+<div class="result"></div>
+</div>
 
-<div class="question" data-qid="63" data-category="rsa-sig" data-type="choice"><p><strong>Question:</strong> Which security goal does RSA public-key encryption primarily provide? <br/>A) Availability <br/>B) Confidentiality <br/>C) Non-repudiation</p>
-<label><input name="q63" type="radio" value="A"/> A</label><br/>
-<label><input name="q63" type="radio" value="B"/> B</label><br/>
-<label><input name="q63" type="radio" value="C"/> C</label>
-<div class="result"></div></div>
+<div class="question" data-qid="69" data-type="choice">
+<p><strong>69.</strong> RSA belongs to which category of cryptography?</p>
+<div class="choices">
+<label><input name="q69" type="radio" value="A"/> A. Symmetric cryptography</label><br/>
+<label><input name="q69" type="radio" value="B"/> B. Asymmetric cryptography</label><br/>
+<label><input name="q69" type="radio" value="C"/> C. Transposition cryptography</label><br/>
+<label><input name="q69" type="radio" value="D"/> D. Hashing only</label><br/>
+</div>
+<div class="result"></div>
+</div>
 
-<div class="question" data-qid="64" data-category="rsa-sig" data-type="choice"><p><strong>Question:</strong> What does the acronym RSA stand for? <br/>A) Rivest, Shamir, Adleman <br/>B) Randomized Security Algorithm <br/>C) Robust Signature Architecture</p>
-<label><input name="q64" type="radio" value="A"/> A</label><br/>
-<label><input name="q64" type="radio" value="B"/> B</label><br/>
-<label><input name="q64" type="radio" value="C"/> C</label>
-<div class="result"></div></div>
+<div class="question" data-qid="70" data-type="choice">
+<p><strong>70.</strong> How many letter positions are used by the classical Shift Cipher under modulo arithmetic?</p>
+<div class="choices">
+<label><input name="q70" type="radio" value="A"/> A. 10</label><br/>
+<label><input name="q70" type="radio" value="B"/> B. 26</label><br/>
+<label><input name="q70" type="radio" value="C"/> C. 128</label><br/>
+<label><input name="q70" type="radio" value="D"/> D. 256</label><br/>
+</div>
+<div class="result"></div>
+</div>
 
-<div class="question" data-qid="65" data-category="rsa-sig" data-type="choice"><p><strong>Question:</strong> Digital signatures ensure that a message has not been altered in transit. Which goal is this? <br/>A) Anonymity <br/>B) Steganography <br/>C) Integrity</p>
-<label><input name="q65" type="radio" value="A"/> A</label><br/>
-<label><input name="q65" type="radio" value="B"/> B</label><br/>
-<label><input name="q65" type="radio" value="C"/> C</label>
-<div class="result"></div></div>
+<div class="question" data-qid="71" data-type="choice">
+<p><strong>71.</strong> In RSA digital signatures, which key is used by the sender to generate the signature?</p>
+<div class="choices">
+<label><input name="q71" type="radio" value="A"/> A. Sender's private key</label><br/>
+<label><input name="q71" type="radio" value="B"/> B. Sender's public key</label><br/>
+<label><input name="q71" type="radio" value="C"/> C. Recipient's public key</label><br/>
+<label><input name="q71" type="radio" value="D"/> D. Recipient's private key</label><br/>
+</div>
+<div class="result"></div>
+</div>
 
-<div class="question" data-qid="66" data-category="rsa-sig" data-type="choice"><p><strong>Question:</strong> What mathematical function calculates \(\varphi(n)\)? <br/>A) Euler's totient function <br/>B) Carmichael function <br/>C) Greatest Common Divisor</p>
-<label><input name="q66" type="radio" value="A"/> A</label><br/>
-<label><input name="q66" type="radio" value="B"/> B</label><br/>
-<label><input name="q66" type="radio" value="C"/> C</label>
-<div class="result"></div></div>
+<div class="question" data-qid="72" data-type="choice">
+<p><strong>72.</strong> In RSA digital signatures, which key is used by anyone to verify the signature?</p>
+<div class="choices">
+<label><input name="q72" type="radio" value="A"/> A. Sender's private key</label><br/>
+<label><input name="q72" type="radio" value="B"/> B. Sender's public key</label><br/>
+<label><input name="q72" type="radio" value="C"/> C. Recipient's private key</label><br/>
+<label><input name="q72" type="radio" value="D"/> D. Shared session key</label><br/>
+</div>
+<div class="result"></div>
+</div>
 
-<div class="question" data-qid="67" data-category="rsa-sig" data-type="choice"><p><strong>Question:</strong> In RSA encryption, which key is published openly to everyone? <br/>A) Private key <br/>B) Public key <br/>C) Symmetric session key</p>
-<label><input name="q67" type="radio" value="A"/> A</label><br/>
-<label><input name="q67" type="radio" value="B"/> B</label><br/>
-<label><input name="q67" type="radio" value="C"/> C</label>
-<div class="result"></div></div>
-
-<div class="question" data-qid="68" data-category="rsa-sig" data-type="choice"><p><strong>Question:</strong> The Vigenère cipher is classified as which type of cipher? <br/>A) Monoalphabetic <br/>B) Polyalphabetic <br/>C) Transposition</p>
-<label><input name="q68" type="radio" value="A"/> A</label><br/>
-<label><input name="q68" type="radio" value="B"/> B</label><br/>
-<label><input name="q68" type="radio" value="C"/> C</label>
-<div class="result"></div></div>
-
-<div class="question" data-qid="69" data-category="rsa-sig" data-type="choice"><p><strong>Question:</strong> Asymmetric cryptography relies on which key structure? <br/>A) Single shared key <br/>B) Related public/private key pair <br/>C) Random pre-shared matrix</p>
-<label><input name="q69" type="radio" value="A"/> A</label><br/>
-<label><input name="q69" type="radio" value="B"/> B</label><br/>
-<label><input name="q69" type="radio" value="C"/> C</label>
-<div class="result"></div></div>
-
-<div class="question" data-qid="70" data-category="rsa-sig" data-type="choice"><p><strong>Question:</strong> What is the modulus base used for standard English alphabet shifts? <br/>A) 10 <br/>B) 128 <br/>C) 26</p>
-<label><input name="q70" type="radio" value="A"/> A</label><br/>
-<label><input name="q70" type="radio" value="B"/> B</label><br/>
-<label><input name="q70" type="radio" value="C"/> C</label>
-<div class="result"></div></div>
-
-<div class="question" data-qid="71" data-category="rsa-sig" data-type="choice"><p><strong>Question:</strong> In RSA digital signatures, which key creates the signature? <br/>A) Recipient's public key <br/>B) Signer's private key <br/>C) Signer's public key</p>
-<label><input name="q71" type="radio" value="A"/> A</label><br/>
-<label><input name="q71" type="radio" value="B"/> B</label><br/>
-<label><input name="q71" type="radio" value="C"/> C</label>
-<div class="result"></div></div>
-
-<div class="question" data-qid="72" data-category="rsa-sig" data-type="choice"><p><strong>Question:</strong> In RSA digital signatures, which key verifies the signature? <br/>A) Signer's public key <br/>B) Signer's private key <br/>C) Recipient's private key</p>
-<label><input name="q72" type="radio" value="A"/> A</label><br/>
-<label><input name="q72" type="radio" value="B"/> B</label><br/>
-<label><input name="q72" type="radio" value="C"/> C</label>
-<div class="result"></div></div>
-
-<!-- AFFINE CIPHERS -->
-<div class="question" data-qid="73" data-category="affine" data-type="text"><p><strong>Question:</strong> Encrypt <strong>CAT</strong> using \(a=5\), \(b=8\).</p><input placeholder="Enter ciphertext" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="74" data-category="affine" data-type="text"><p><strong>Question:</strong> Decrypt <strong>RCLLA</strong> using \(a=5\), \(b=8\).</p><input placeholder="Enter plaintext" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="75" data-category="affine" data-type="choice"><p><strong>Question:</strong> Which multiplier \(a\) is valid for an Affine cipher over modulo 26? <br/>A) 2 <br/>B) 5 <br/>C) 13</p>
-<label><input name="q75" type="radio" value="A"/> A</label><br/>
-<label><input name="q75" type="radio" value="B"/> B</label><br/>
-<label><input name="q75" type="radio" value="C"/> C</label>
-<div class="result"></div></div>
-<div class="question" data-qid="76" data-category="affine" data-type="text"><p><strong>Question:</strong> Encrypt <strong>HI</strong> using \(a=7\), \(b=2\).</p><input placeholder="Enter ciphertext" type="text"/><div class="result"></div></div>
-<div class="question" data-qid="77" data-category="affine" data-type="text"><p><strong>Question:</strong> In an Affine cipher \(E(x)=(5x+b)\bmod26\), A is encrypted as F. Find \(b\).</p><input placeholder="Enter b" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="73" data-type="text"><p><strong>73.</strong> Encrypt <strong>CAT</strong> using \(a=5\), \(b=8\).</p><input placeholder="Enter ciphertext" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="74" data-type="text"><p><strong>74.</strong> Decrypt <strong>RCLLA</strong> using \(a=5\), \(b=8\).</p><input placeholder="Enter plaintext" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="75" data-type="choice">
+<p><strong>75.</strong> Which multiplier \(a\) is valid for an Affine cipher over modulo 26?</p>
+<div class="choices">
+<label><input name="q75" type="radio" value="A"/> A. 2</label><br/>
+<label><input name="q75" type="radio" value="B"/> B. 5</label><br/>
+<label><input name="q75" type="radio" value="C"/> C. 13</label><br/>
+<label><input name="q75" type="radio" value="D"/> D. 26</label><br/>
+</div>
+<div class="result"></div>
+</div>
+<div class="question" data-qid="76" data-type="text"><p><strong>76.</strong> Encrypt <strong>HI</strong> using \(a=7\), \(b=2\).</p><input placeholder="Enter ciphertext" type="text"/><div class="result"></div></div>
+<div class="question" data-qid="77" data-type="text"><p><strong>77.</strong> In an Affine cipher \(E(x)=(5x+b)\bmod26\), A is encrypted as F. Find \(b\).</p><input placeholder="Enter b" type="text"/><div class="result"></div></div>
 
 </div> <!-- End of #questions-container -->
 
@@ -447,36 +499,19 @@ function unlockQuiz() {
             loginStatus.style.display = "none";
             startBtn.disabled = false;
 
-            const categories = ["shift", "rsa-calc", "rsa-sig", "vigenere", "rsa-blocks", "affine"];
-            document.querySelectorAll(".question").forEach(q => {
-                q.style.display = "none";
-                q.classList.remove("active-subset");
-            });
-
-            const selectedQuestions = [];
-
-            categories.forEach(cat => {
-                const matchingQuestions = Array.from(document.querySelectorAll(`.question[data-category="${cat}"]`));
-                for (let i = matchingQuestions.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [matchingQuestions[i], matchingQuestions[j]] = [matchingQuestions[j], matchingQuestions[i]];
-                }
-                matchingQuestions.slice(0, 2).forEach(q => {
-                    selectedQuestions.push(q);
-                });
-            });
-
-            // Fisher-Yates shuffle across the entire selected 12-question set
-            for (let i = selectedQuestions.length - 1; i > 0; i--) {
+            const allQuestions = Array.from(document.querySelectorAll(".question"));
+            
+            // Fisher-Yates shuffle across all 77 questions
+            for (let i = allQuestions.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
-                [selectedQuestions[i], selectedQuestions[j]] = [selectedQuestions[j], selectedQuestions[i]];
+                [allQuestions[i], allQuestions[j]] = [allQuestions[j], allQuestions[i]];
             }
 
             const container = document.getElementById("questions-container");
-            selectedQuestions.forEach((q, idx) => {
+            allQuestions.forEach((q, idx) => {
                 q.style.display = "block";
                 q.classList.add("active-subset");
-                container.appendChild(q); // Re-order physically in DOM
+                container.appendChild(q); // Reorder physically in DOM
 
                 const label = q.querySelector("p > strong");
                 if (label) label.textContent = (idx + 1) + ".";
