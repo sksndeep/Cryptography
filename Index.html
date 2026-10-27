@@ -34,7 +34,7 @@
 <div class="container">
 <h1>Cryptography Quiz</h1>
 <p class="subtitle">Shift, Caesar, Affine, Vigenère, Key Exchange, and RSA Ciphers</p>
-
+<p class="subtitle"><strong>Solutions availability:</strong> Available after 30 October 2026, 11:59 PM IST.</p>
 
 <details id="returning" style="margin:14px 0; font-family:system-ui,sans-serif;">
 <summary><strong>Already submitted?</strong> View all questions and solutions here (available after 30 October 2026, 11:59 PM IST)</summary>
@@ -440,6 +440,91 @@ function loadAllQuestionsWithSolutions(email, token, status, button) {
     button.disabled = true;
     status.style.display = "block";
     status.textContent = "Loading all questions and solutions…";
+    
+    const ALL_QUESTIONS_TEXT = [
+      "Plaintext: \\(\\text{ABC}\\) | Key: \\(23\\)",
+      "Plaintext: \\(\\text{CAT}\\) | Key: \\(3\\)",
+      "Plaintext: \\(\\text{HELLO}\\) | Key: \\(3\\)",
+      "Plaintext: \\(\\text{HELLO WORLD}\\) | Key: \\(5\\)",
+      "Plaintext: \\(\\text{THE QUICK BROWN FOX}\\) | Key: \\(3\\)",
+      "Ciphertext: \\(\\text{XYZ}\\) | Key: \\(23\\). Decrypt to plaintext.",
+      "Ciphertext: \\(\\text{FRPSXWHU}\\) | Key: \\(3\\). Decrypt to plaintext.",
+      "Ciphertext: \\(\\text{DWWDFN}\\) | Key: \\(3\\). Decrypt to plaintext.",
+      "Ciphertext: \\(\\text{PHHW PH}\\) | Key: \\(3\\). Decrypt to plaintext.",
+      "Ciphertext: \\(\\text{BTWQI}\\) | Key: \\(5\\). Decrypt to plaintext.",
+      "Plaintext \\(A\\) becomes \\(D\\) after encryption. What is the shift key?",
+      "Decrypt \\(\\text{VHFUHW FRGH}\\) using key \\(3\\).",
+      "Encrypt \\(\\text{HELLO}\\) with key \\(10\\), then decrypt your result using the same key. What is the ciphertext?",
+      "The letter \\(A\\) is encrypted as \\(X\\). What is the shift key, from \\(0\\) to \\(25\\)?",
+      "Encrypt \\(\\text{ZEBRA}\\) using key \\(1\\).",
+      "If \\(p = 5\\) and \\(q = 11\\), calculate \\(n\\).",
+      "If \\(p = 5\\) and \\(q = 11\\), calculate \\(\\varphi(n)\\).",
+      "Given \\(e = 3\\) and \\(\\varphi(n) = 40\\), find \\(d\\) such that \\(3d \\equiv 1 \\pmod{40}\\).",
+      "Given \\(n = 33\\), \\(e = 3\\), and plaintext \\(M = 2\\), calculate \\(C = M^e \\pmod{n}\\).",
+      "Given \\(n = 33\\), \\(d = 7\\), and ciphertext \\(C = 29\\), calculate \\(M = C^d \\pmod{n}\\).",
+      "If \\(\\varphi(n) = 40\\), which of the following is a valid public exponent \\(e\\): \\(3\\), \\(4\\), or \\(10\\)?",
+      "Given \\(n = 2537\\) and private exponent \\(d = 937\\), compute signed message block \\(S\\) for \\(M = 0419\\).",
+      "Given \\(n = 2537\\) and private exponent \\(d = 937\\), compute signed message block \\(S\\) for \\(M = 1204\\).",
+      "Use Vigenère cipher with key <strong>BLUE</strong> to encrypt <strong>SNOWFALL</strong>.",
+      "Ciphertext <strong>OIKYWVHBX</strong> was produced using key <strong>HOT</strong>. What is the plaintext?",
+      "Alice sends signed block \\(S = 1756\\) to Bob: \\(C = S^{21} \\pmod{3127}\\). Compute \\(C\\).",
+      "Alice signs \\(M = 1804\\) with \\(d = 1183\\) and \\(n = 2867\\). Compute signature block \\(S\\).",
+      "Encrypt <strong>ATTACK</strong> using \\(n = 2537\\) and \\(e = 13\\). (Space-separated blocks)",
+      "Decrypt <strong>3185 2038 2460 2550</strong> with \\(n = 53 \\cdot 61\\) and \\(e = 17\\).",
+      "Decrypt <strong>0667 1947 0671</strong> with \\(n = 43 \\cdot 59\\) and \\(e = 13\\).",
+      "Encrypt <strong>UPLOAD</strong> using \\(n = 3233\\) and \\(e = 17\\).",
+      "The letter \\(H\\) is encrypted as \\(A\\). Find the shift key \\(k\\).",
+      "The letter \\(A\\) is encrypted as \\(L\\). Find the shift key \\(k\\).",
+      "Decrypt <strong>JROG PHGDO</strong> using shift key \\(k=3\\).",
+      "Encrypt <strong>THE QUICK BROWN FOX</strong> using shift key \\(k=23\\).",
+      "Ciphertext is <strong>KHOOR</strong>. Recover the plaintext.",
+      "Decrypt <strong>CHEUD</strong> using shift key \\(k=3\\).",
+      "Using shift key \\(k=25\\), what letter does plaintext \\(A\\) become?",
+      "Encrypt <strong>THIS IS A TEST</strong> using shift key \\(k=5\\).",
+      "Decrypt <strong>PDWKHPDWLFV</strong> using shift key \\(k=3\\).",
+      "Encrypt <strong>CIPHER</strong> using shift key \\(k=5\\).",
+      "For \\(p=7\\), \\(q=11\\), and \\(e=7\\), find \\(d\\) satisfying \\(7d\\equiv1\\pmod{60}\\).",
+      "If \\(\\varphi(n)=120\\), which of \\(e=7,10,15\\) is a valid public exponent?",
+      "Given \\(e=7\\) and \\(\\varphi(n)=120\\), find \\(d\\) such that \\(7d\\equiv1\\pmod{120}\\).",
+      "Using \\(n=33\\) and \\(d=7\\), decrypt ciphertext \\(C=13\\).",
+      "For \\(p=11\\) and \\(q=13\\), calculate \\(\\varphi(n)\\).",
+      "Using \\(n=33\\) and \\(d=7\\), calculate \\(14^7\\bmod33\\).",
+      "Using public key \\((n,e)=(55,3)\\), encrypt \\(M=4\\).",
+      "RSA uses \\(p=5, q=11, e=3, d=27\\). Encrypt \\(M=7\\), then decrypt. What plaintext is recovered?",
+      "Let \\(p=3, q=11, e=3\\). Find the least positive private exponent \\(d\\).",
+      "If \\(\\varphi(n)=36\\) and \\(e=5\\), are they relatively prime? Enter COPRIME or NOT COPRIME.",
+      "Student chooses \\(p=7, q=11, e=12\\). Is this valid? Enter VALID or INVALID.",
+      "Let \\(p=11\\) and \\(q=13\\). Calculate \\(n\\).",
+      "Using public key \\((n,e)=(33,3)\\), encrypt \\(M=2\\).",
+      "Using \\(n=55\\) and \\(e=3\\), encrypt \\(M=9\\).",
+      "Decrypt <strong>RIJVSUYVJN</strong> using keyword <strong>KEY</strong>.",
+      "Decrypt <strong>LXFOPVEFRNHR</strong> using keyword <strong>LEMON</strong>.",
+      "Encrypt <strong>MEETMEATNOON</strong> using keyword <strong>KEY</strong>.",
+      "Encrypt <strong>ATTACKATDAWN</strong> using keyword <strong>LEMON</strong>.",
+      "Decrypt <strong>EEVYQTL</strong> using keyword <strong>MATH</strong>.",
+      "Encrypt <strong>NETWORKSECURITY</strong> using keyword <strong>CIPHER</strong>.",
+      "The Shift Cipher is also commonly known by which historical name?",
+      "When a message is encrypted with the recipient’s public key and only the recipient can decrypt it, which security property is primarily provided?",
+      "What do the letters RSA stand for?",
+      "Which security property concerns detecting unauthorized changes to a message?",
+      "What is the standard name of the arithmetic function φ(n), used when choosing RSA exponents?",
+      "Which RSA key may be distributed openly?",
+      "The classical Vigenère cipher is generally classified as which type of cipher?",
+      "RSA belongs to which category of cryptography?",
+      "How many letter positions are used by the classical Shift Cipher under modulo arithmetic?",
+      "In RSA digital signatures, which key is used by the sender to generate the signature?",
+      "In RSA digital signatures, which key is used by anyone to verify the signature?",
+      "Encrypt <strong>CAT</strong> using \\(a=5\\), \\(b=8\\).",
+      "Decrypt <strong>RCLLA</strong> using \\(a=5\\), \\(b=8\\).",
+      "Which multiplier \\(a\\) is valid for an Affine cipher over modulo 26?",
+      "Encrypt <strong>HI</strong> using \\(a=7\\), \\(b=2\\).",
+      "In an Affine cipher \\(E(x)=(5x+b)\\bmod26\\), A is encrypted as F. Find \\(b\\).",
+      "Diffie-Hellman: Let prime \\(p = 17\\) and base \\(g = 3\\). If Alice's private key is \\(a = 4\\), compute her public key \\(A\\).",
+      "Diffie-Hellman: With \\(p = 17\\), Alice's private key \\(a = 4\\), and Bob's public key received as \\(B = 10\\), compute the shared secret \\(s\\).",
+      "Diffie-Hellman: Let prime \\(p = 11\\) and base \\(g = 5\\). If Alice's private key is \\(a = 2\\), compute her public key \\(A\\).",
+      "Diffie-Hellman: With \\(p = 11\\), Alice's private key \\(a = 2\\), and Bob's public key received as \\(B = 4\\), compute the shared secret \\(s\\)."
+    ];
+
     const cb = "solCallback_" + Date.now();
     window[cb] = function (result) {
         delete window[cb];
@@ -458,6 +543,7 @@ function loadAllQuestionsWithSolutions(email, token, status, button) {
 
             result.review.forEach((item, index) => {
                 const qid = index + 1;
+                const qText = ALL_QUESTIONS_TEXT[index] || "Question text unavailable.";
                 const qDiv = document.createElement("div");
                 qDiv.className = "question";
                 qDiv.style.display = "block";
@@ -467,8 +553,8 @@ function loadAllQuestionsWithSolutions(email, token, status, button) {
                     studentAns = result.answers[index];
                 }
 
-                qDiv.innerHTML = `<p><strong>${qid}.</strong> Solution Review</p>` +
-                                 `<div style="font-family:system-ui,sans-serif; margin-bottom:5px; font-size:14px;"><strong>Your Response:</strong> ${studentAns ? studentAns : '<span style="color:#b91c1c;">No response recorded</span>'}</div>` +
+                qDiv.innerHTML = `<p><strong>${qid}.</strong> ${qText}</p>` +
+                                 `<div style="font-family:system-ui,sans-serif; margin: 8px 0; font-size:14px;"><strong>Your Response:</strong> ${studentAns ? studentAns : '<span style="color:#b91c1c;">No response recorded</span>'}</div>` +
                                  `<div class="solution">${item.s}</div>`;
                 container.appendChild(qDiv);
                 if (window.renderMathInElement) renderMathInElement(qDiv);
