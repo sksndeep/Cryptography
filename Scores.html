@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Student Results Portal</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      margin: 0;
+      padding: 24px 14px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 650px;
+      margin: 30px auto;
+      background: white;
+      padding: 32px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    }
+
+    h1, h2 {
+      color: #1e40af;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-weight: 700;
+    }
+
+    h1 { text-align: center; font-size: 26px; margin-top: 0; }
+    h2 { font-size: 20px; margin-top: 24px; }
+
+    .subtitle {
+      text-align: center;
+      color: #64748b;
+      font-size: 15px;
+      margin-bottom: 24px;
+    }
+
+    label {
+      display: block;
+      margin: 16px 0 6px;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 15px;
+      border-radius: 8px;
+    }
+
+    input {
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    input:focus {
+      border-color: #2563eb;
+      background: #fff;
+    }
+
+    button {
+      margin-top: 20px;
+      border: 0;
+      background: #2563eb;
+      color: white;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    button:hover { background: #1d4ed8; }
+    button:active { transform: scale(0.98); }
+
+    button:disabled {
+      opacity: .6;
+      cursor: wait;
+    }
+
+    #status {
+      margin-top: 14px;
+      color: #b42318;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+      font-weight: 600;
+    }
+
+    #results { display: none; margin-top: 24px; }
+
+    .student {
+      padding: 16px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      line-height: 1.8;
+      overflow-wrap: anywhere;
+      margin-bottom: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+    }
+
+    th, td {
+      padding: 12px 10px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    th { background: #f8fafc; text-align: left; color: #475569; }
+    th:last-child, td:last-child { text-align: right; }
+    .total { font-weight: bold; background: #eff6ff; color: #1e40af; }
+
+    .note {
+      color: #64748b;
+      font-size: 13px;
+      line-height: 1.5;
+      margin-top: 20px;
+    }
+
+    .secondary {
+      background: #475569;
+      margin-top: 12px;
+    }
+    .secondary:hover { background: #334155; }
+
+    @media (max-width: 420px) {
+      .container { padding: 20px 14px; }
+      th, td { padding: 10px 6px; font-size: 14px; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+    <h1>Student Results Portal</h1>
+    <p class="subtitle">Enter your Roll No and Access PIN to view your examination marks.</p>
+
+    <form id="loginForm">
+      <label for="roll">Roll No</label>
+      <input id="roll" name="roll" type="text" autocomplete="username" maxlength="50" required>
+
+      <label for="pin">Access PIN</label>
+      <input id="pin" name="pin" type="password" autocomplete="current-password" maxlength="100" required>
+
+      <button id="submitBtn" type="submit">View My Results</button>
+    </form>
+
+    <p id="status" role="status" aria-live="polite"></p>
+
+    <section id="results" aria-live="polite">
+      <h2>Your Examination Results</h2>
+
+      <div id="studentInfo" class="student"></div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Course Component</th>
+            <th>Marks</th>
+          </tr>
+        </thead>
+        <tbody id="marksBody"></tbody>
+      </table>
+
+      <p class="note">Keep your PIN private. Clear your results before leaving a shared device.</p>
+
+      <button id="signOutBtn" class="secondary" type="button">Clear Results &amp; Sign Out</button>
+    </section>
+  </main>
+
+  <script>
+    // YOUR GOOGLE APPS SCRIPT WEB APP URL
+    const API_URL = 'https://script.google.com/macros/s/AKfycbyqHU647FmoDoUocA7ttc5B73xp6kmD-vyLvRShW-bEfJmusbs7BlXZiNBZPFwDKUd6/exec';
+
+    const form = document.getElementById('loginForm');
+    const statusBox = document.getElementById('status');
+    const submitBtn = document.getElementById('submitBtn');
+    const results = document.getElementById('results');
+
+    let requestPending = false;
+
+    function clearResults() {
+      results.style.display = 'none';
+      document.getElementById('studentInfo').replaceChildren();
+      document.getElementById('marksBody').replaceChildren();
+    }
+
+    function addTextElement(parent, tag, text) {
+      const element = document.createElement(tag);
+      element.textContent = text;
+      parent.appendChild(element);
+    }
+
+    function formatMarks(value) {
+      return value == null || value === '' ? '—' : String(value);
+    }
+
+    // JSONP Implementation to bypass browser CORS / cookie restrictions
+    function fetchJSONP(url, callbackName) {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        const timeout = setTimeout(() => {
+          cleanup();
+          reject(new Error('Request timed out. Please try again.'));
+        }, 15000);
+
+        function cleanup() {
+          if (script.parentNode) script.parentNode.removeChild(script);
+          delete window[callbackName];
+          clearTimeout(timeout);
+        }
+
+        window[callbackName] = function(data) {
+          cleanup();
+          resolve(data);
+        };
+
+        script.onerror = function() {
+          cleanup();
+          reject(new Error('Failed to reach backend service.'));
+        };
+
+        script.src = url + '&callback=' + callbackName;
+        document.body.appendChild(script);
+      });
+    }
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      if (requestPending) return;
+
+      clearResults();
+      requestPending = true;
+      submitBtn.disabled = true;
+      statusBox.textContent = 'Verifying your details…';
+
+      const roll = encodeURIComponent(document.getElementById('roll').value.trim());
+      const pin = encodeURIComponent(document.getElementById('pin').value);
+
+      const callbackName = 'cb_' + Math.random().toString(36).substr(2, 9);
+      const requestUrl = `${API_URL}?roll=${roll}&pin=${pin}`;
+
+      fetchJSONP(requestUrl, callbackName)
+        .then(function(response) {
+          requestPending = false;
+          submitBtn.disabled = false;
+          document.getElementById('pin').value = '';
+
+          if (!response || !response.success) {
+            statusBox.textContent = response?.message || 'Unable to verify your details.';
+            return;
+          }
+
+          statusBox.textContent = '';
+
+          const result = response.result;
+          const studentInfo = document.getElementById('studentInfo');
+
+          addTextElement(studentInfo, 'div', 'Name: ' + result.name);
+          addTextElement(studentInfo, 'div', 'Roll No: ' + result.rollNo);
+
+          const body = document.getElementById('marksBody');
+
+          result.components.forEach(function(component) {
+            const row = document.createElement('tr');
+            if (component.name === 'Total') row.className = 'total';
+
+            const nameCell = document.createElement('td');
+            nameCell.textContent = component.name;
+
+            const marksCell = document.createElement('td');
+            marksCell.textContent = formatMarks(component.marks) + (component.max !== null ? ' / ' + component.max : '');
+
+            row.appendChild(nameCell);
+            row.appendChild(marksCell);
+            body.appendChild(row);
+          });
+
+          results.style.display = 'block';
+        })
+        .catch(function(error) {
+          requestPending = false;
+          submitBtn.disabled = false;
+          document.getElementById('pin').value = '';
+
+          statusBox.textContent = error.message || 'The request failed. Please try again.';
+          console.error('Request failed:', error);
+        });
+    });
+
+    document.getElementById('signOutBtn').addEventListener('click', function() {
+      clearResults();
+      form.reset();
+      statusBox.textContent = 'Results cleared from this page.';
+      document.getElementById('roll').focus();
+    });
+  </script>
+</body>
+</html>
